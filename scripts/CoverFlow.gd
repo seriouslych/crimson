@@ -43,10 +43,22 @@ extends Control
 var games: Array[GameLoader.GameData] = []
 var game_covers: Array[GameCover3D] = []
 var current_index: int = 0
-var running_games := {} # title -> {"pid": int}
+var running_games := {}
 var logo_cache: Dictionary = {}
-var failed_api_games: Array[String] = [] # Список игр, для которых API не дал нужного результата
+var failed_api_games: Array[String] = []
 var updated_game_data: Dictionary = {}
+
+# ========== ОПТИМИЗАЦИЯ: Пул обложек ==========
+const MAX_VISIBLE_COVERS = 7  # Максимум видимых обложек одновременно
+var cover_pool: Array[GameCover3D] = []
+var active_covers: Dictionary = {}  # {game_index: GameCover3D}
+
+# ========== ОПТИМИЗАЦИЯ: Кэш материалов ==========
+var material_cache: Dictionary = {}  # {texture_path: StandardMaterial3D}
+
+# ========== ОПТИМИЗАЦИЯ: Асинхронная загрузка ==========
+var logo_load_queue: Array[int] = []  # Индексы игр для загрузки логотипов
+var is_loading_logo: bool = false
 
 @export var cover_spacing: float = 6.0
 @export var side_angle_y: float = 35.0
@@ -84,6 +96,11 @@ var edit_gamepad_mode: bool = false
 
 var ud_animation_finished = true
 
+# game_title -> { pid: int, start_time: int }
+var logo_processes: Dictionary = {}
+
+const LOGO_PROCESS_TIMEOUT_MS := 15000 # 15 секунд
+
 func _ready():
 	loading_icon.visible = true
 	
@@ -101,13 +118,16 @@ func _ready():
 	setup_keyboard_ui()
 	
 	await get_tree().process_frame
-	preload_logos()
+	
+	# ОПТИМИЗАЦИЯ: Создаём пул обложек вместо всех сразу
+	create_cover_pool()
+	
+	# Предзагрузка логотипов в фоне
+	start_background_logo_loading()
 	
 	for device_id in Input.get_connected_joypads():
 		update_controller_icon(device_id)
 		
-	await get_tree().process_frame
-	setup_coverflow()
 	await get_tree().process_frame
 	update_display()
 	
@@ -117,13 +137,106 @@ func _ready():
 	
 	MusicPlayer.enable_reverb_effect(false, 0.0, 0.0)
 
+# ========== ОПТИМИЗАЦИЯ: Создание пула обложек ==========
+func create_cover_pool():
+	"""Создаёт ограниченный пул переиспользуемых обложек"""
+	for i in range(MAX_VISIBLE_COVERS):
+		var cover = GameCover3D.new()
+		viewport_3d.add_child(cover)
+		cover_pool.append(cover)
+		cover.visible = false
+	
+	print("✓ Создан пул из ", MAX_VISIBLE_COVERS, " обложек")
+
+func get_cover_from_pool() -> GameCover3D:
+	"""Получает свободную обложку из пула"""
+	for cover in cover_pool:
+		if not cover.visible:
+			return cover
+	return null
+
+func return_cover_to_pool(cover: GameCover3D):
+	"""Возвращает обложку в пул"""
+	cover.visible = false
+	cover.game_data = null
+
+# ========== ОПТИМИЗАЦИЯ: Кэширование материалов ==========
+func get_cached_material(texture_path: String) -> StandardMaterial3D:
+	"""Возвращает кэшированный материал или создаёт новый"""
+	if material_cache.has(texture_path):
+		return material_cache[texture_path]
+	
+	var texture = GameLoader.load_texture_from_path(texture_path)
+	if not texture:
+		return null
+	
+	var material = StandardMaterial3D.new()
+	material.albedo_texture = texture
+	material.albedo_color = Color.WHITE
+	material.metallic = 0.1
+	material.roughness = 0.7
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	
+	material_cache[texture_path] = material
+	return material
+
+# ========== ОПТИМИЗАЦИЯ: Асинхронная загрузка логотипов ==========
+func start_background_logo_loading():
+	"""Запускает фоновую загрузку логотипов"""
+	# Сначала загружаем логотип текущей игры
+	if current_index < games.size():
+		_load_logo_async(current_index)
+	
+	# Затем загружаем соседние
+	for offset in [1, -1, 2, -2, 3, -3]:
+		var idx = current_index + offset
+		if idx >= 0 and idx < games.size():
+			logo_load_queue.append(idx)
+	
+	_process_logo_queue()
+
+func _process_logo_queue():
+	"""Обрабатывает очередь загрузки логотипов"""
+	if is_loading_logo or logo_load_queue.is_empty():
+		return
+	
+	is_loading_logo = true
+	var game_idx = logo_load_queue.pop_front()
+	
+	await _load_logo_async(game_idx)
+	
+	is_loading_logo = false
+	_process_logo_queue()
+
+func _load_logo_async(game_idx: int):
+	"""Асинхронно загружает логотип для игры"""
+	if game_idx < 0 or game_idx >= games.size():
+		return
+	
+	var game_title = games[game_idx].title
+	
+	# Проверяем кэш
+	if logo_cache.has(game_title):
+		return
+	
+	# Проверяем на диске
+	var cached_logo = load_logo_from_cache(game_title)
+	if cached_logo:
+		logo_cache[game_title] = {"texture": cached_logo, "is_fallback": false}
+		return
+	
+	# Запускаем API запрос (без блокировки)
+	request_logo_with_steamboxcover(game_title)
+	
+	# Небольшая задержка между запросами
+	await get_tree().create_timer(0.1).timeout
+
 func _init_edit_focusable_controls():
 	edit_focusable_controls.clear()
 	
-	# Добавляем элементы в порядке навигации
 	if editgame_line:
 		edit_focusable_controls.append(editgame_line)
-		editgame_line.focus_mode = Control.FOCUS_ALL  # LineEdit должен оставаться FOCUS_ALL
+		editgame_line.focus_mode = Control.FOCUS_ALL
 	
 	if editgame_executable:
 		edit_focusable_controls.append(editgame_executable)
@@ -160,7 +273,6 @@ func _on_edit_control_focus_entered(control: Control):
 			edit_current_focus_index = i
 			break
 	
-	# Визуальная обратная связь
 	if control is Button:
 		control.modulate = Color(1.2, 1.2, 1.2)
 	elif control is LineEdit:
@@ -199,7 +311,6 @@ func _set_edit_focus(index: int):
 	
 	var control = edit_focusable_controls[index]
 	
-	# Для LineEdit не меняем focus_mode, так как он уже FOCUS_ALL
 	if not control is LineEdit:
 		control.focus_mode = Control.FOCUS_ALL
 	
@@ -207,7 +318,6 @@ func _set_edit_focus(index: int):
 
 func _clear_all_edit_focus():
 	for control in edit_focusable_controls:
-		# Для LineEdit оставляем FOCUS_ALL
 		if not control is LineEdit:
 			control.focus_mode = Control.FOCUS_NONE
 		control.release_focus()
@@ -223,9 +333,7 @@ func _activate_edit_control():
 		_trigger_vibration(0.5, 0.0, 0.1)
 
 func is_animation_in_progress() -> bool:
-	if not ud_animation_finished:
-			return true
-	return false
+	return not ud_animation_finished
 
 func find_notification():
 	var main_scene = get_tree().get_first_node_in_group("main_scene")
@@ -244,14 +352,12 @@ func load_games():
 	cleanup_unused_covers()
 
 func cleanup_unused_covers():
-	"""Обновленная очистка с учетом логотипов"""
 	var covers_dir = "user://covers/"
 	if not DirAccess.dir_exists_absolute(covers_dir):
 		return
 	
 	var used_covers = {}
 	
-	# Добавляем обычные обложки
 	for game in games:
 		if game.get("front") != "":
 			used_covers[game.front] = true
@@ -260,7 +366,6 @@ func cleanup_unused_covers():
 		if game.get("spine") != "":
 			used_covers[game.spine] = true
 		
-		# Для логотипов - проверяем все возможные имена
 		var possible_logo_names = get_possible_logo_filenames(game.title)
 		for logo_name in possible_logo_names:
 			used_covers[covers_dir + logo_name] = true
@@ -276,12 +381,10 @@ func cleanup_unused_covers():
 		if not file_name.begins_with("."):
 			var full_path = covers_dir + file_name
 			if not used_covers.has(full_path):
-				print("Удаляем неиспользуемый файл: ", full_path)
 				dir.remove(file_name)
 		file_name = dir.get_next()
 	
 	dir.list_dir_end()
-	
 
 func setup_keyboard_ui():
 	keyboard_control.visible = true
@@ -319,23 +422,7 @@ func update_controller_icon(device_id: int):
 			start_button.texture = load(gamepadtype.ICON_GENERIC_START)
 			editgame_gamepad_icon.texture = load(gamepadtype.ICON_GENERIC_BACK)
 
-func setup_coverflow():
-	for cover in game_covers:
-		if is_instance_valid(cover):
-			cover.queue_free()
-	game_covers.clear()
-	
-	await get_tree().process_frame
-	
-	if games.is_empty():
-		return
-	
-	for i in range(games.size()):
-		var cover_instance: GameCover3D = GameCover3D.new()
-		cover_instance.set_game_data(games[i])
-		viewport_3d.add_child(cover_instance)
-		game_covers.append(cover_instance)
-
+# ========== ОПТИМИЗАЦИЯ: Обновление только видимых обложек ==========
 func update_display():
 	if games.is_empty():
 		game_title_label.text = tr("CF_NOGAMES_TIP")
@@ -343,11 +430,48 @@ func update_display():
 	
 	game_title_label.text = games[current_index].title
 	
-	for i in range(game_covers.size()):
-		var cover = game_covers[i]
-		if not is_instance_valid(cover):
-			continue
+	# Определяем диапазон видимых обложек
+	var half_visible = MAX_VISIBLE_COVERS / 2
+	var start_idx = max(0, current_index - half_visible)
+	var end_idx = min(games.size() - 1, current_index + half_visible)
+	
+	# Очищаем старые активные обложки
+	var new_active_covers = {}
+	
+	for i in range(start_idx, end_idx + 1):
+		var cover: GameCover3D
+		
+		# Переиспользуем существующую или берём из пула
+		if active_covers.has(i):
+			cover = active_covers[i]
+		else:
+			cover = get_cover_from_pool()
+			if not cover:
+				continue
 			
+			# Устанавливаем данные игры с кэшированными материалами
+			cover.set_game_data(games[i])
+			
+			# ОПТИМИЗАЦИЯ: Используем кэшированные материалы
+			if games[i].front != "":
+				var mat = get_cached_material(games[i].front)
+				if mat and cover.mesh_instance:
+					cover.front_material = mat
+			if games[i].back != "":
+				var mat = get_cached_material(games[i].back)
+				if mat and cover.mesh_instance:
+					cover.back_material = mat
+			if games[i].spine != "":
+				var mat = get_cached_material(games[i].spine)
+				if mat and cover.mesh_instance:
+					cover.spine_material = mat
+			
+			cover.apply_materials_to_mesh()
+		
+		cover.visible = true
+		new_active_covers[i] = cover
+		
+		# Вычисляем позицию
 		var offset = i - current_index
 		var pos = Vector3()
 		var rot = Vector3()
@@ -366,16 +490,27 @@ func update_display():
 			rot = Vector3(-side_angle_x, side_angle_y, 0)
 			scl = Vector3(0.8, 0.8, 0.8)
 			cover.set_selected(false)
+		
+		if first_update:
+			cover.position = pos
+			cover.rotation_degrees = rot
+			cover.scale = scl
+		
+		if not active_covers.has(i):
+			cover.position = pos
+			cover.rotation_degrees = rot
+			cover.scale = scl
+		
+		cover.set_target_transform(pos, rot, scl)
 	
-		if not cover.is_animation_finished:
-			if first_update:
-				cover.position = pos
-				cover.rotation_degrees = rot
-				cover.scale = scl
-			cover.set_target_transform(pos, rot, scl)
+	# Возвращаем неиспользуемые обложки в пул
+	for idx in active_covers.keys():
+		if not new_active_covers.has(idx):
+			return_cover_to_pool(active_covers[idx])
 	
+	active_covers = new_active_covers
 	first_update = false
-	
+
 func _on_up_pressed():
 	if games.size() <= 1:
 		return
@@ -386,6 +521,9 @@ func _on_up_pressed():
 	
 	update_display()
 	
+	# Подгружаем логотипы для новых видимых игр
+	_queue_nearby_logos()
+	
 func _on_down_pressed():
 	if games.size() <= 1:
 		return
@@ -395,6 +533,19 @@ func _on_down_pressed():
 		current_index = 0
 	
 	update_display()
+	
+	# Подгружаем логотипы для новых видимых игр
+	_queue_nearby_logos()
+
+func _queue_nearby_logos():
+	"""Добавляет соседние игры в очередь загрузки логотипов"""
+	for offset in [-3, -2, -1, 1, 2, 3]:
+		var idx = current_index + offset
+		if idx >= 0 and idx < games.size():
+			if not logo_load_queue.has(idx) and not logo_cache.has(games[idx].title):
+				logo_load_queue.append(idx)
+	
+	_process_logo_queue()
 
 func _input(event):
 	var main_scene = get_tree().get_first_node_in_group("main_scene")
@@ -515,7 +666,6 @@ func move_viewport_container(x: int, time: float):
 	tween.tween_property(viewport_container, "position:x", x, time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	await tween.finished
 
-# ПРОСТАЯ ФУНКЦИЯ ЗАПУСКА ИГРЫ
 func launch_game():
 	if games.is_empty():
 		return
@@ -523,17 +673,9 @@ func launch_game():
 	var game = games[current_index]
 	var title = game.title
 	
-	# Проверяем, не запущена ли уже
 	if running_games.has(title):
 		show_notification(tr("NTF_ALREADYSTARTED").format({"title": title}))
 		return
-	
-	# Анимация
-	#if current_index < game_covers.size():
-		#var cover = game_covers[current_index]
-		#cover.start_fast_spin_move_animation()
-		#await get_tree().create_timer(1.0).timeout
-		#cover.stop_fast_spin_move_animation()
 	
 	await get_tree().create_timer(1.0).timeout
 	
@@ -542,12 +684,10 @@ func launch_game():
 		show_notification(tr("NTF_NOEXECSPECIFIED"))
 		return
 	
-	# Проверяем существование файла
 	if not FileAccess.file_exists(exe_path):
 		show_notification(tr("NTF_NOEXECFOUND"))
 		return
 	
-	# Запускаем игру
 	var pid = _execute_game(exe_path)
 	if pid > 0:
 		_start_monitoring(title, pid)
@@ -567,7 +707,6 @@ func _execute_game(exe_path: String) -> int:
 			OS.execute("chmod", ["+x", exe_path])
 			
 			if exe_path.get_extension().to_lower() == "exe":
-				# Windows exe в Linux
 				if OS.execute("which", ["umu-run"]) == 0:
 					return OS.create_process("umu-run", [exe_path])
 				elif OS.execute("which", ["wine"]) == 0:
@@ -576,7 +715,6 @@ func _execute_game(exe_path: String) -> int:
 					show_notification(tr("NTF_WINENOTFOUND"))
 					return -1
 			
-			# Для нативных Linux игр - создаем команду с установкой LD_LIBRARY_PATH
 			var lib_paths = []
 			var potential_lib_dirs = ["lib", "libs", "../lib", "lib64", "lib32"]
 			
@@ -585,7 +723,7 @@ func _execute_game(exe_path: String) -> int:
 				if DirAccess.dir_exists_absolute(full_path):
 					lib_paths.append(full_path)
 			
-			lib_paths.append(working_dir)  # Сама директория игры
+			lib_paths.append(working_dir)
 			
 			var ld_library_path = ":".join(lib_paths)
 			var command = "cd \"" + working_dir + "\" && LD_LIBRARY_PATH=\"" + ld_library_path + ":$LD_LIBRARY_PATH\" ./" + exe_path.get_file()
@@ -601,13 +739,12 @@ func _execute_game(exe_path: String) -> int:
 		_:	
 			return -1
 
-# МОНИТОРИНГ ПРОЦЕССОВ
 func _start_monitoring(title: String, pid: int):
-	var game = games[current_index]  # Получаем текущую игру
-	var game_id = game.id  # Получаем ID игры
+	var game = games[current_index]
+	var game_id = game.id
 	
 	running_games[title] = {"pid": pid}
-	time_tracker.start_tracking(game_id, title, pid)  # Теперь передаём game_id, title, pid
+	time_tracker.start_tracking(game_id, title, pid)
 	update_display()
 	_monitor_game(title)
 
@@ -649,7 +786,6 @@ func show_game_info(game_title: String):
 		game_time_label.text = tr("CF_GT_NOTIME_TIP")
 		game_date_label.text = tr("CF_GT_NODATE_TIP")
 
-	# Загружаем логотип через steamboxcover
 	load_logo_with_steamboxcover(game_title)
 
 func show_fallback_text(game_title: String):
@@ -657,41 +793,7 @@ func show_fallback_text(game_title: String):
 	game_fallback_label.visible = true
 	game_info_logo.visible = false
 
-# --- Предзагрузка кэша и постановка в очередь отсутствующих логотипов ---
-func preload_logos():
-	"""Загружаем с диска в память все доступные логотипы и собираем очередь для оставшихся."""
-	# 1) Пополняем logo_cache из файлового кэша
-	for g in games:
-		var title = g.title
-		if logo_cache.has(title):
-			continue
-		var cached_logo = load_logo_from_cache(title)
-		if cached_logo != null:
-			logo_cache[title] = {"texture": cached_logo, "is_fallback": false}
-
-	# 2) Формируем очередь запросов к API
-	missing_logo_queue.clear()
-	for g in games:
-		var title = g.title
-		if logo_cache.has(title):
-			continue
-		if failed_api_games.has(title):
-			continue
-		missing_logo_queue.append(title)
-
-	# 3) Запускаем обработку
-	request_next_logo()
-
-func request_next_logo():
-	"""Посылает следующий запрос к steamboxcover, если нет текущего обрабатываемого."""
-	if processing_request != "" or missing_logo_queue.is_empty():
-		return
-	processing_request = missing_logo_queue.pop_front()
-	request_logo_with_steamboxcover(processing_request)
-
-# --- Обработка ответа API ---
 func load_logo_with_steamboxcover(game_title: String):
-	"""Загрузка логотипа через steamboxcover: сначала память, потом диск, иначе текст"""
 	if logo_cache.has(game_title):
 		var cached = logo_cache[game_title]
 		if cached.has("is_fallback") and cached.is_fallback:
@@ -702,7 +804,6 @@ func load_logo_with_steamboxcover(game_title: String):
 			game_fallback_label.visible = false
 		return
 
-	# Проверяем диск (и загружаем в память)
 	var cached_logo = load_logo_from_cache(game_title)
 	if cached_logo != null:
 		logo_cache[game_title] = {"texture": cached_logo, "is_fallback": false}
@@ -711,12 +812,10 @@ func load_logo_with_steamboxcover(game_title: String):
 		game_fallback_label.visible = false
 		return
 
-	# Ничего нет — показываем текст (и запускаем асинхронный поиск через steamboxcover)
 	show_fallback_text(game_title)
 	request_logo_with_steamboxcover(game_title)
 
 func get_steamboxcover_path() -> String:
-	"""Возвращает путь к программе steamboxcover с улучшенной отладкой"""
 	var exe_path = OS.get_executable_path()
 	var exe_dir = exe_path.get_base_dir()
 	
@@ -726,7 +825,6 @@ func get_steamboxcover_path() -> String:
 	else:
 		steamboxcover_path = exe_dir + "/bin/steamboxcover"
 	
-	# Проверяем также в текущей рабочей директории
 	var current_dir = OS.get_environment("PWD")
 	if current_dir == "":
 		current_dir = exe_dir
@@ -737,53 +835,41 @@ func get_steamboxcover_path() -> String:
 	else:
 		alt_path = current_dir + "/bin/steamboxcover"
 	
-	# Если основной путь не существует, пробуем альтернативный
 	if not FileAccess.file_exists(steamboxcover_path) and FileAccess.file_exists(alt_path):
 		return alt_path
 	
 	return steamboxcover_path
 
-func request_logo_with_steamboxcover(game_title: String):
-	"""Асинхронно запрашивает логотип через steamboxcover"""
+func request_logo_with_steamboxcover(game_title: String) -> void:
 	if logo_cache.has(game_title) or failed_api_games.has(game_title):
 		return
 
-	var steamboxcover_path = get_steamboxcover_path()
+	var steamboxcover_path := get_steamboxcover_path()
 	if not FileAccess.file_exists(steamboxcover_path):
-		print("steamboxcover не найден, невозможно получить логотип для: ", game_title)
 		failed_api_games.append(game_title)
 		logo_cache[game_title] = {"is_fallback": true}
-		request_next_logo()
 		return
 
-	var args = ["--game", game_title, "--output_dir", ProjectSettings.globalize_path("user://covers/"), "--only_logo", "--only_steamgriddb", "-k", "ac6407f383cb7696689026c4576a7758"]
-	var output = []
-	var result = OS.execute(steamboxcover_path, args, output, true, false)
-	
-	if result == OK:
-		# Проверяем, был ли создан логотип
-		var cached_logo = load_logo_from_cache(game_title)
-		if cached_logo != null:
-			logo_cache[game_title] = {"texture": cached_logo, "is_fallback": false}
-			# Обновляем отображение, если это текущая игра
-			if not games.is_empty() and games[current_index].title == game_title:
-				game_info_logo.texture = cached_logo
-				game_info_logo.visible = true
-				game_fallback_label.visible = false
-			print("✓ Логотип успешно получен через steamboxcover: ", game_title)
-		else:
-			print("✗ steamboxcover завершился успешно, но логотип не найден: ", game_title)
-			failed_api_games.append(game_title)
-			logo_cache[game_title] = {"is_fallback": true}
-	else:
-		print("✗ Ошибка выполнения steamboxcover для: ", game_title)
+	var args := PackedStringArray([
+		"--game", game_title,
+		"--output_dir", ProjectSettings.globalize_path("user://covers/"),
+		"--only_logo",
+		"--only_steamgriddb",
+		"-k", "ac6407f383cb7696689026c4576a7758"
+	])
+
+	var pid := OS.create_process(steamboxcover_path, args)
+
+	if pid <= 0:
 		failed_api_games.append(game_title)
 		logo_cache[game_title] = {"is_fallback": true}
-	
-	processing_request = ""
-	request_next_logo()
+		return
 
-# --- Кэширование ---
+	logo_processes[game_title] = {
+		"pid": pid,
+		"start_time": Time.get_ticks_msec()
+	}
+
 func save_logo_to_cache(game_title: String, texture: ImageTexture):
 	if texture == null:
 		return
@@ -810,22 +896,13 @@ func _save_logo_to_disk_async_once(game_title: String, texture: ImageTexture):
 
 	await get_tree().process_frame
 	var err = image.save_png(file_path)
-	if err == OK:
-		print("Логотип сохранён: ", file_path)
-	else:
-		print("Ошибка сохранения: ", err)
-
 
 func load_logo_from_cache(game_title: String) -> ImageTexture:
-	"""
-	Загружает логотип, ищет файл с разными вариантами санитизации.
-	"""
 	var covers_dir = "user://covers/"
 	var dir = DirAccess.open(covers_dir)
 	if not dir:
 		return null
 	
-	# Генерируем возможные имена файлов
 	var possible_names = get_possible_logo_filenames(game_title)
 	
 	for filename in possible_names:
@@ -836,20 +913,13 @@ func load_logo_from_cache(game_title: String) -> ImageTexture:
 			if error == OK:
 				var texture = ImageTexture.new()
 				texture.set_image(image)
-				print("Загружен логотип: ", file_path)
 				return texture
-			else:
-				print("Ошибка загрузки логотипа: ", error, " из ", file_path)
 	
 	return null
 
 func get_possible_logo_filenames(game_title: String) -> PackedStringArray:
-	"""
-	Генерирует возможные имена файлов логотипа, которые могут быть созданы steamboxcover.
-	"""
 	var possible_names = PackedStringArray()
 	
-	# Вариант 1: Удаление специальных символов, оставление пробелов, затем удаление пробелов
 	var variant1 = game_title
 	var special_chars := ["<", ">", ":", "\"", "/", "\\", "|", "?", "*", ";", "!", ".", "'", "`", "~"]
 	for c in special_chars:
@@ -861,10 +931,9 @@ func get_possible_logo_filenames(game_title: String) -> PackedStringArray:
 		variant1 = variant1.substr(0, variant1.length() - 1)
 	if variant1.length() > 200:
 		variant1 = variant1.substr(0, 200)
-	variant1 = variant1.replace(" ", "")  # Удаляем пробелы
+	variant1 = variant1.replace(" ", "")
 	possible_names.append(variant1 + "_logo.png")
 	
-	# Вариант 2: Удаление специальных символов, но оставление пробелов
 	var variant2 = game_title
 	for c in special_chars:
 		variant2 = variant2.replace(c, " ")
@@ -875,10 +944,8 @@ func get_possible_logo_filenames(game_title: String) -> PackedStringArray:
 		variant2 = variant2.substr(0, variant2.length() - 1)
 	if variant2.length() > 200:
 		variant2 = variant2.substr(0, 200)
-	# Оставляем пробелы
 	possible_names.append(variant2 + "_logo.png")
 	
-	# Вариант 3: Просто удаление специальных символов без замены на пробелы
 	var variant3 = game_title
 	for c in special_chars:
 		variant3 = variant3.replace(c, "")
@@ -889,7 +956,6 @@ func get_possible_logo_filenames(game_title: String) -> PackedStringArray:
 		variant3 = variant3.substr(0, 200)
 	possible_names.append(variant3 + "_logo.png")
 	
-	# Убираем дубликаты
 	var unique_names = []
 	for name in possible_names:
 		if not unique_names.has(name):
@@ -898,10 +964,6 @@ func get_possible_logo_filenames(game_title: String) -> PackedStringArray:
 	return PackedStringArray(unique_names)
 
 func sanitize_filename(filename: String) -> String:
-	"""
-	Санитизирует имя файла для использования в ключах кэша и очистке.
-	Используем вариант без пробелов для консистентности.
-	"""
 	var safe := filename
 	var special_chars := ["<", ">", ":", "\"", "/", "\\", "|", "?", "*", ";", "!", ".", "'", "`", "~"]
 	for c in special_chars:
@@ -914,7 +976,6 @@ func sanitize_filename(filename: String) -> String:
 	if safe.length() > 200:
 		safe = safe.substr(0, 200)
 	return safe.replace(" ", "")
-	
 
 func _file_dialog():
 	file_dialog.clear_filters()
@@ -985,7 +1046,7 @@ func _on_delete_pressed() -> void:
 func enter_editmode():
 	var game = games[current_index]
 	var title = game.title
-	var cover = game_covers[current_index]
+	var cover = active_covers.get(current_index)
 	edit_mode = true
 	
 	editgame_line.visible = true
@@ -1009,13 +1070,13 @@ func enter_editmode():
 		edit_gamepad_mode = true
 		_set_edit_focus(edit_current_focus_index)
 	
-	if current_index < game_covers.size():
+	if cover:
 		cover.start_fast_spin_move_animation()
-		move_viewport_container(500, 0.4)
-		game_info_node.set_notify_transform(true)
-		animationplayer.play("GameEdit")
-		game_info_node.queue_redraw()
-		await get_tree().create_timer(0.3).timeout
+	move_viewport_container(500, 0.4)
+	game_info_node.set_notify_transform(true)
+	animationplayer.play("GameEdit")
+	game_info_node.queue_redraw()
+	await get_tree().create_timer(0.3).timeout
 
 func exit_editmode():
 	if editgame_line.text == "":
@@ -1024,7 +1085,7 @@ func exit_editmode():
 	
 	var game = games[current_index]
 	var title = game.title
-	var cover = game_covers[current_index]
+	var cover = active_covers.get(current_index)
 	var game_id = game_manager.find_game_id_by_title(title)
 	var plus_icon = load("res://assets/kenney_input-prompts_1.4/Nintendo Switch 2/Default/switch_button_plus.png")
 	
@@ -1060,12 +1121,12 @@ func exit_editmode():
 	
 	show_game_info(title)
 
-	if current_index < game_covers.size():
+	if cover:
 		editing = true
 		cover.stop_fast_spin_move_animation()
-		move_viewport_container(-500, 0.4)
-		animationplayer.play("GameEdit_Back")
-		await get_tree().create_timer(0.3).timeout
+	move_viewport_container(-500, 0.4)
+	animationplayer.play("GameEdit_Back")
+	await get_tree().create_timer(0.3).timeout
 	
 	await get_tree().create_timer(0.4).timeout
 	refresh_games()
@@ -1086,13 +1147,21 @@ func _reset_edit():
 func _exit_tree():
 	logo_cache.clear()
 	failed_api_games.clear()
+	material_cache.clear()
 
 func refresh_games():
+	# Очищаем кэш материалов при обновлении
+	material_cache.clear()
+	
 	load_games()
 	if current_index >= games.size():
 		current_index = max(0, games.size() - 1)
-	await get_tree().process_frame
-	setup_coverflow()
+	
+	# Возвращаем все обложки в пул
+	for cover in active_covers.values():
+		return_cover_to_pool(cover)
+	active_covers.clear()
+	
 	await get_tree().process_frame
 	update_display()
 

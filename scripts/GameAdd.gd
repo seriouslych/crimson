@@ -2,14 +2,15 @@ extends Control
 
 @onready var file_dialog = $FileDialog
 @onready var panel = $Panel
-@onready var executable_icon = $Panel/Executable/TextureRect
-@onready var front_icon = $Panel/Front/TextureRect
-@onready var back_icon = $Panel/Back/TextureRect
-@onready var spine_icon = $Panel/Spine/TextureRect
-@onready var download_icon = $Panel/Download/TextureRect
-@onready var game_name = $Panel/LineEdit
-@onready var download_button = $Panel/Download
-@onready var option_button = $Panel/OptionButton
+@onready var executable_icon = $Panel/TabContainer/GA_TAB_AG/TextureRect
+@onready var front_icon = $Panel/TabContainer/GA_TAB_AG/Front/TextureRect
+@onready var back_icon = $Panel/TabContainer/GA_TAB_AG/Back/TextureRect
+@onready var spine_icon = $Panel/TabContainer/GA_TAB_AG/Spine/TextureRect
+@onready var download_icon = $Panel/TabContainer/GA_TAB_AG/Download/TextureRect
+@onready var game_name = $Panel/TabContainer/GA_TAB_AG/LineEdit
+@onready var download_button = $Panel/TabContainer/GA_TAB_AG/Download
+@onready var option_button = $Panel/TabContainer/GA_TAB_AG/OptionButton
+@onready var tab_container = $Panel/TabContainer/GA_TAB_AG/TabContainer
 
 # Данные о игре
 @export var game_data = {

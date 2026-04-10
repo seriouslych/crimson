@@ -15,6 +15,7 @@ CF_GT_HTIME_FORMAT,{hours} hours,{hours} ч.,{hours}時間
 CF_GT_MTIME_FORMAT,{minutes} min.,{minutes} мин.,{minutes}分
 CF_GT_NOTIME_FORMAT,never,никогда,なし
 SP_HOME_BT,Home,Главная,ホーム
+SP_MPLAYER_BT,Music,Музыка,音楽
 SP_ADDGAME_BT,Add Game,Добав. игру,ゲームを追加
 SP_SETTINGS_BT,Settings,Настройки,設定
 SP_EXIT_BT,Exit,Выход,終了
@@ -27,6 +28,8 @@ GA_SPINE_BT,Spine,Боковой,背表紙
 GA_COVERS_BT,Download\nCovers,Скачать\nОбложки,カバーを\n\nダウンロード
 GA_DOWNCOVERS_BT,Downloading\nCovers…,Скачивание\nОбложек…,カバーを\n\nダウンロード中…
 GA_DONE_BT,Done,Готово,完了
+GA_TAB_AG,Add Game,Добав. игру,ゲームを追加
+GA_TAB_OPT,Options,Опции,オプション
 NTF_ALREADYSTARTED,«{title}» is already started.,«{title}» уже запущена.,«{title}» はすでに開始されています。
 NTF_NOEXECSPECIFIED,The game has no executable file specified!,У игры не указан исполняемый файл!,このゲームには実行ファイルが指定されていません！
 NTF_NOEXECFOUND,Executable file not found!,Исполняемый файл не найден!,実行ファイルが見つかりません！

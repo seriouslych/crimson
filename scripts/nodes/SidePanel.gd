@@ -66,8 +66,8 @@ func show_panel():
 	
 	MusicPlayer.transition_to_muffled(0.3, 450.0)
 	
-	#var main_scene = get_tree().get_first_node_in_group("main_scene")
-	#var current_scene = main_scene.get_current_scene()
+	var main_scene = get_tree().get_first_node_in_group("main_scene")
+	var current_scene = main_scene.get_current_scene()
 	
 	dark_node.visible = true
 	dark_node.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -86,17 +86,18 @@ func show_panel():
 		settings_button.visible = true
 		exit_button.visible = true
 		
-		## Определяем индекс текущей сцены
-		#if current_scene.name == "CoverFlow":
-			#side_panel_current_index = 0
-		#elif current_scene.name == "GameAdd":
-			#side_panel_current_index = 1
-		#elif current_scene.name == "Settings":
-			#side_panel_current_index = 2
+		# Определяем индекс текущей сцены
+		if current_scene.name == "CoverFlow":
+			side_panel_current_index = 0
+		elif current_scene.name == "VinylGrid":
+			side_panel_current_index = 1
+		elif current_scene.name == "GameAdd":
+			side_panel_current_index = 2
+		elif current_scene.name == "Settings":
+			side_panel_current_index = 3
 		
 		# Устанавливаем фокус на текущую кнопку
 		_set_button_focus(side_panel_current_index)
-		
 
 func hide_panel():
 	if side_panel_moving or not side_panel_shown:

@@ -8,6 +8,10 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Crimson Konsole"
@@ -17,9 +21,9 @@ config/name_localized={
 config/description="Game Launcher with Game Boxes"
 config/version="2.6"
 run/main_scene="uid://1v70uh5v1r74"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 boot_splash/bg_color=Color(0.129412, 0.129412, 0.129412, 1)
-boot_splash/fullsize=false
+boot_splash/stretch_mode=0
 boot_splash/image="uid://cdh47px35sx7w"
 config/icon="uid://bpx3hq3fbkh8d"
 config/windows_native_icon="res://Build/Windows/icon.ico"

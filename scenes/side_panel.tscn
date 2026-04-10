@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://ddp74nsq1w4v7"]
+[gd_scene load_steps=13 format=3 uid="uid://ddp74nsq1w4v7"]
 
 [ext_resource type="FontFile" uid="uid://bl33m6ku6ffwm" path="res://assets/fonts/Jost/Jost-VariableFont_wght.ttf" id="1_o4m3c"]
 [ext_resource type="Texture2D" uid="uid://cpfiay5pqs3l3" path="res://assets/kenney_input-prompts_1.4/Nintendo Switch 2/Default/switch_button_home.png" id="2_waqlc"]
 [ext_resource type="Texture2D" uid="uid://vckwtjp05t7f" path="res://assets/kenney_input-prompts_1.4/Nintendo Switch 2/Default/switch_button_plus.png" id="3_waqlc"]
+[ext_resource type="Texture2D" uid="uid://ytgd285i3sn2" path="res://assets/icons/music.png" id="3_wiy8g"]
 [ext_resource type="Texture2D" uid="uid://dwuqa2jdp4o7f" path="res://assets/icons/settings.png" id="4_ad6hi"]
 [ext_resource type="Texture2D" uid="uid://cjw1mmxf8r1l0" path="res://assets/icons/delete.png" id="5_tv1fm"]
 
@@ -158,7 +159,7 @@ offset_top = 7.72726
 offset_right = 83.0
 offset_bottom = 71.7273
 scale = Vector2(0.969954, 0.969954)
-texture = ExtResource("4_ad6hi")
+texture = ExtResource("3_wiy8g")
 expand_mode = 1
 
 [node name="Hover" type="ColorRect" parent="CanvasLayer/VBoxContainer/MusicPlayer"]

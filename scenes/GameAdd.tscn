@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://m8nha0xnac7y"]
+[gd_scene load_steps=28 format=3 uid="uid://m8nha0xnac7y"]
 
 [ext_resource type="Script" uid="uid://bq5fqq12ljivu" path="res://scripts/GameAdd.gd" id="1_jlcgv"]
 [ext_resource type="Texture2D" uid="uid://7senqp83e0md" path="res://assets/ui/skibidi.png" id="3_hnih8"]
@@ -28,6 +28,19 @@ font_size = 44
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8ocm4"]
 texture = ExtResource("6_accbs")
+
+[sub_resource type="FontVariation" id="FontVariation_fhx61"]
+fallbacks = Array[Font]([ExtResource("7_8e8ny"), null])
+base_font = ExtResource("9_qgo40")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fhx61"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ama77"]
+bg_color = Color(0.85490197, 0.28627452, 0.28627452, 0.67058825)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fhx61"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8e8ny"]
 bg_color = Color(0.854902, 0.286275, 0.286275, 0.623529)
@@ -131,27 +144,46 @@ layout_mode = 0
 offset_left = 592.0
 offset_top = 22.0
 offset_right = 1330.0
-offset_bottom = 855.0
+offset_bottom = 888.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_8ocm4")
 
-[node name="Label" type="Label" parent="Panel"]
+[node name="TabContainer" type="TabContainer" parent="Panel"]
 layout_mode = 0
-offset_left = 252.0
-offset_top = 41.0
-offset_right = 474.0
-offset_bottom = 114.0
+offset_left = 9.0
+offset_top = 97.0
+offset_right = 734.0
+offset_bottom = 752.0
+theme_override_fonts/font = SubResource("FontVariation_fhx61")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/panel = SubResource("StyleBoxFlat_fhx61")
+theme_override_styles/tab_selected = SubResource("StyleBoxFlat_ama77")
+theme_override_styles/tab_focus = SubResource("StyleBoxEmpty_fhx61")
+tab_alignment = 1
+current_tab = 1
+
+[node name="GA_TAB_AG" type="Control" parent="Panel/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Label" type="Label" parent="Panel/TabContainer/GA_TAB_AG"]
+layout_mode = 0
+offset_left = 243.0
+offset_top = -129.0
+offset_right = 465.0
+offset_bottom = -56.0
 theme_override_fonts/font = ExtResource("9_qgo40")
 theme_override_font_sizes/font_size = 32
 text = "GA_TITLE_TIP"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LineEdit" type="LineEdit" parent="Panel"]
+[node name="LineEdit" type="LineEdit" parent="Panel/TabContainer/GA_TAB_AG"]
 layout_mode = 0
-offset_left = 145.0
-offset_top = 127.0
-offset_right = 594.0
-offset_bottom = 198.0
+offset_left = 136.0
+offset_top = 36.0
+offset_right = 585.0
+offset_bottom = 107.0
 theme_override_colors/caret_color = Color(0.854902, 0.286275, 0.286275, 1)
 theme_override_colors/selection_color = Color(0.854902, 0.286275, 0.286275, 1)
 theme_override_fonts/font = ExtResource("7_8e8ny")
@@ -161,12 +193,12 @@ placeholder_text = "GA_GAMENAME_TIP"
 alignment = 1
 caret_blink = true
 
-[node name="Executable" type="Button" parent="Panel"]
+[node name="Executable" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
 layout_mode = 0
-offset_left = 47.0
-offset_top = 243.0
-offset_right = 356.0
-offset_bottom = 314.0
+offset_left = 38.0
+offset_top = 152.0
+offset_right = 347.0
+offset_bottom = 223.0
 size_flags_vertical = 3
 focus_mode = 1
 theme_override_fonts/font = ExtResource("7_8e8ny")
@@ -175,7 +207,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_EXEC_BT"
 
-[node name="TextureRect" type="TextureRect" parent="Panel/Executable"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Executable"]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 5.0
@@ -185,12 +217,12 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("8_qgo40")
 expand_mode = 1
 
-[node name="Front" type="Button" parent="Panel"]
+[node name="Front" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
 layout_mode = 0
-offset_left = 389.0
-offset_top = 243.0
-offset_right = 698.0
-offset_bottom = 314.0
+offset_left = 380.0
+offset_top = 152.0
+offset_right = 689.0
+offset_bottom = 223.0
 size_flags_vertical = 3
 focus_mode = 1
 theme_override_fonts/font = ExtResource("7_8e8ny")
@@ -201,7 +233,7 @@ text = "GA_FRONT_BT"
 autowrap_mode = 2
 clip_text = true
 
-[node name="TextureRect" type="TextureRect" parent="Panel/Front"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Front"]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 5.0
@@ -211,12 +243,12 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("8_qgo40")
 expand_mode = 1
 
-[node name="Back" type="Button" parent="Panel"]
+[node name="Back" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
 layout_mode = 0
-offset_left = 47.0
-offset_top = 355.0
-offset_right = 355.0
-offset_bottom = 426.0
+offset_left = 38.0
+offset_top = 264.0
+offset_right = 346.0
+offset_bottom = 335.0
 size_flags_vertical = 3
 focus_mode = 1
 theme_override_fonts/font = ExtResource("7_8e8ny")
@@ -225,7 +257,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_BACK_BT"
 
-[node name="TextureRect" type="TextureRect" parent="Panel/Back"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Back"]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 5.0
@@ -235,12 +267,12 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("8_qgo40")
 expand_mode = 1
 
-[node name="Spine" type="Button" parent="Panel"]
+[node name="Spine" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
 layout_mode = 0
-offset_left = 389.0
-offset_top = 355.0
-offset_right = 698.0
-offset_bottom = 426.0
+offset_left = 380.0
+offset_top = 264.0
+offset_right = 689.0
+offset_bottom = 335.0
 size_flags_vertical = 3
 focus_mode = 1
 theme_override_fonts/font = ExtResource("7_8e8ny")
@@ -249,7 +281,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_SPINE_BT"
 
-[node name="TextureRect" type="TextureRect" parent="Panel/Spine"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Spine"]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 5.0
@@ -259,23 +291,23 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("8_qgo40")
 expand_mode = 1
 
-[node name="OptionButton" type="OptionButton" parent="Panel"]
+[node name="OptionButton" type="OptionButton" parent="Panel/TabContainer/GA_TAB_AG"]
 layout_mode = 0
-offset_left = 47.0
-offset_top = 488.0
-offset_right = 355.0
-offset_bottom = 554.0
+offset_left = 38.0
+offset_top = 397.0
+offset_right = 346.0
+offset_bottom = 463.0
 theme_override_fonts/font = ExtResource("9_qgo40")
 theme_override_font_sizes/font_size = 32
 theme_override_styles/hover = SubResource("StyleBoxFlat_i4sv0")
 theme_override_styles/focus = SubResource("StyleBoxFlat_qgo40")
 
-[node name="Download" type="Button" parent="Panel"]
+[node name="Download" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
 layout_mode = 0
-offset_left = 389.0
-offset_top = 471.0
-offset_right = 698.0
-offset_bottom = 542.0
+offset_left = 380.0
+offset_top = 380.0
+offset_right = 689.0
+offset_bottom = 451.0
 size_flags_vertical = 3
 focus_mode = 1
 theme_override_fonts/font = ExtResource("7_8e8ny")
@@ -284,7 +316,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_COVERS_BT"
 
-[node name="TextureRect" type="TextureRect" parent="Panel/Download"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Download"]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 21.0
@@ -294,12 +326,12 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("10_52518")
 expand_mode = 1
 
-[node name="Done" type="Button" parent="Panel"]
+[node name="Done" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
 layout_mode = 0
-offset_left = 199.0
-offset_top = 634.0
-offset_right = 543.0
-offset_bottom = 705.0
+offset_left = 190.0
+offset_top = 519.0
+offset_right = 534.0
+offset_bottom = 590.0
 size_flags_vertical = 3
 focus_mode = 1
 theme_override_fonts/font = ExtResource("7_8e8ny")
@@ -307,6 +339,10 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_DONE_BT"
+
+[node name="GA_TAB_OPT" type="Control" parent="Panel/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="BottomPanel" type="Panel" parent="."]
 layout_mode = 0
@@ -340,10 +376,10 @@ file_mode = 0
 access = 2
 use_native_dialog = true
 
-[connection signal="pressed" from="Panel/Executable" to="." method="_on_fs_pressed"]
-[connection signal="pressed" from="Panel/Front" to="." method="_on_front_pressed"]
-[connection signal="pressed" from="Panel/Back" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="Panel/Spine" to="." method="_on_spine_pressed"]
-[connection signal="pressed" from="Panel/Download" to="." method="_on_download_pressed"]
-[connection signal="pressed" from="Panel/Done" to="." method="_on_done_pressed"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Executable" to="." method="_on_fs_pressed"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Front" to="." method="_on_front_pressed"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Spine" to="." method="_on_spine_pressed"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Download" to="." method="_on_download_pressed"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Done" to="." method="_on_done_pressed"]
 [connection signal="file_selected" from="FileDialog" to="." method="_on_file_selected"]
