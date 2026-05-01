@@ -6,7 +6,7 @@
   <img src="logo.png" alt="Logo" width="200"/>
 </p>
 
-[![Godot Engine](https://img.shields.io/badge/Godot-4.5+-478cbf?style=for-the-badge&logo=godot-engine&logoColor=white)](https://godotengine.org/)
+[![Godot Engine](https://img.shields.io/badge/Godot-4.6+-478cbf?style=for-the-badge&logo=godot-engine&logoColor=white)](https://godotengine.org/)
 [![GDScript](https://img.shields.io/badge/GDScript-478cbf?style=for-the-badge&logo=godot-engine&logoColor=white)](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/index.html)
 [![License](https://img.shields.io/github/license/Crimson-Core/crimson-konsole?style=for-the-badge)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/Crimson-Core/crimson-konsole?style=for-the-badge&logo=github)](https://github.com/seriouslych/crimson/stargazers)
