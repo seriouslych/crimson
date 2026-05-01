@@ -2,7 +2,7 @@ extends Control
 
 @onready var file_dialog = $FileDialog
 @onready var panel = $Panel
-@onready var executable_icon = $Panel/TabContainer/GA_TAB_AG/TextureRect
+@onready var executable_icon = $Panel/TabContainer/GA_TAB_AG/Executable/TextureRect
 @onready var front_icon = $Panel/TabContainer/GA_TAB_AG/Front/TextureRect
 @onready var back_icon = $Panel/TabContainer/GA_TAB_AG/Back/TextureRect
 @onready var spine_icon = $Panel/TabContainer/GA_TAB_AG/Spine/TextureRect
@@ -12,6 +12,15 @@ extends Control
 @onready var option_button = $Panel/TabContainer/GA_TAB_AG/OptionButton
 @onready var tab_container = $Panel/TabContainer/GA_TAB_AG/TabContainer
 
+@onready var platexec_icon = $Panel/TabContainer/GA_TAB_OPT/PlatformExec/TextureRect
+@onready var covtemp_icon = $Panel/TabContainer/GA_TAB_OPT/CoverTemplate/TextureRect
+@onready var platforms_container = $Panel/TabContainer/GA_TAB_OPT/ScrollContainer/VBoxContainer
+@onready var platform_name = $Panel/TabContainer/GA_TAB_OPT/LineEdit
+@onready var check_button = $Panel/TabContainer/GA_TAB_OPT/CheckButton
+@onready var platexec_button = $Panel/TabContainer/GA_TAB_OPT/PlatformExec
+@onready var covtemp_button = $Panel/TabContainer/GA_TAB_OPT/CoverTemplate
+@onready var platadd_button = $Panel/TabContainer/GA_TAB_OPT/PlatformAdd
+
 # Данные о игре
 @export var game_data = {
 	"id": "",
@@ -20,6 +29,8 @@ extends Control
 	"back": "",
 	"spine": "",
 	"executable": "",
+	"platform_executable": "",
+	"cover_template": "",
 	"box_type": "pc",
 	"platform": "steam"
 }
@@ -40,6 +51,9 @@ var gamepad_mode: bool = false
 const NotificationLogicClass = preload("res://scripts/NotificationLogic.gd")
 var notification = NotificationLogicClass.new()
 var notification_icon = load("res://logo.png")
+
+var active_tab = 0
+var platform_emulator = false
 
 func _ready():
 	add_child(notification)
@@ -730,20 +744,25 @@ func _on_done_pressed() -> void:
 
 func _file_dialog():
 	file_dialog.clear_filters()
-	if current_button == "executable":
+	if current_button == "executable" or current_button == "platform_executable":
 		if OS.get_name() == "Windows":
 			file_dialog.add_filter("*.exe", "Windows Executable")
 			file_dialog.add_filter("*.bat", "Batch Files")
 			file_dialog.add_filter("*.cmd", "Command Files")
+			file_dialog.add_filter("*.lnk", "Link")
+			file_dialog.add_filter("*.url", "Browser link")
 		elif OS.get_name() == "Linux":
 			file_dialog.add_filter("*.sh", "Shell Scripts")
 			file_dialog.add_filter("*.exe", "Windows Executable (Wine)")
 			file_dialog.add_filter("*.x86_64", "x86 64 Bit Executable")
+			file_dialog.add_filter("*.desktop", "Desktop link")
 			file_dialog.add_filter("*", "All Files")
 		elif OS.get_name() == "macOS":
 			file_dialog.add_filter("*.app", "macOS Applications")
 			file_dialog.add_filter("*.sh", "Shell Scripts")
 			file_dialog.add_filter("*", "All Files")
+	elif current_button == "cover_template":
+		file_dialog.add_filter("*.png", "PNG Images")
 	else:
 		file_dialog.add_filter("*.png", "PNG Images")
 		file_dialog.add_filter("*.jpg", "JPEG Images") 
@@ -760,6 +779,8 @@ func _on_file_selected(path):
 		"front": front_icon.texture = load(icon_path)
 		"back": back_icon.texture = load(icon_path)
 		"spine": spine_icon.texture = load(icon_path)
+		"platform_executable": platexec_icon.texture = load(icon_path)
+		"cover_template": covtemp_icon.texture = load(icon_path)
 		
 	if not FileAccess.file_exists(path):
 		notification.show_notification(tr("NTF_FILENOTFOUND"), notification_icon)
@@ -814,3 +835,27 @@ func _trigger_vibration(weak_strength: float, strong_strength: float, duration_s
 		return
 	else:
 		Input.start_joy_vibration(last_device_id, weak_strength, strong_strength, duration_sec)
+
+func _on_tab_container_tab_selected(tab: int) -> void:
+	active_tab = tab
+
+func _on_check_button_toggled(state: bool) -> void:
+	platform_emulator = state
+	if active_tab == 1:
+		if platform_emulator:
+			platexec_button.disabled = false
+			platexec_icon.visible = true
+		else:
+			platexec_button.disabled = true
+			platexec_icon.visible = false
+
+func _on_platform_exec_pressed() -> void:
+	current_button = "platform_executable"
+	_file_dialog()
+
+func _on_cover_template_pressed() -> void:
+	current_button = "cover_template"
+	_file_dialog()
+
+func _on_platform_add_pressed() -> void:
+	game_data["platform"] = platform_name.text.strip_edges()

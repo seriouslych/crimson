@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://m8nha0xnac7y"]
+[gd_scene format=3 uid="uid://m8nha0xnac7y"]
 
 [ext_resource type="Script" uid="uid://bq5fqq12ljivu" path="res://scripts/GameAdd.gd" id="1_jlcgv"]
 [ext_resource type="Texture2D" uid="uid://7senqp83e0md" path="res://assets/ui/skibidi.png" id="3_hnih8"]
@@ -57,7 +57,17 @@ bg_color = Color(0.854902, 0.286275, 0.286275, 0.541176)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qgo40"]
 bg_color = Color(0.854902, 0.286275, 0.286275, 0.65098)
 
-[node name="GameAdd" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hg730"]
+bg_color = Color(0, 0, 0, 0.11764706)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qumfr"]
+bg_color = Color(0.85490197, 0.28627452, 0.28627452, 0.67058825)
+
+[sub_resource type="ImageTexture" id="ImageTexture_kyj2f"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_fhx61"]
+
+[node name="GameAdd" type="Control" unique_id=79118028]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -66,13 +76,13 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_jlcgv")
 
-[node name="TopLeftPanel" type="Control" parent="."]
+[node name="TopLeftPanel" type="Control" parent="." unique_id=1775510635]
 z_index = 100
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Bg" type="TextureRect" parent="TopLeftPanel"]
+[node name="Bg" type="TextureRect" parent="TopLeftPanel" unique_id=1089892725]
 layout_mode = 0
 offset_right = 1416.0
 offset_bottom = 774.0
@@ -80,7 +90,7 @@ texture = ExtResource("3_hnih8")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="Text" type="TextureRect" parent="TopLeftPanel"]
+[node name="Text" type="TextureRect" parent="TopLeftPanel" unique_id=998226555]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 6.0
@@ -90,7 +100,7 @@ texture = ExtResource("4_accbs")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="Logo" type="TextureRect" parent="TopLeftPanel"]
+[node name="Logo" type="TextureRect" parent="TopLeftPanel" unique_id=288483095]
 layout_mode = 0
 offset_left = 31.0
 offset_top = 13.0
@@ -100,12 +110,12 @@ texture = ExtResource("5_8ocm4")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="TopPanel" type="Control" parent="."]
+[node name="TopPanel" type="Control" parent="." unique_id=1448495750]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Time" type="Panel" parent="TopPanel"]
+[node name="Time" type="Panel" parent="TopPanel" unique_id=1513110026]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
@@ -121,7 +131,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qumfr")
 script = ExtResource("6_2ij0d")
 
-[node name="Label" type="Label" parent="TopPanel/Time"]
+[node name="Label" type="Label" parent="TopPanel/Time" unique_id=898861600]
 layout_mode = 0
 offset_left = 81.0
 offset_top = -2.0
@@ -136,10 +146,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 justification_flags = 139
 
-[node name="Timer" type="Timer" parent="TopPanel/Time"]
+[node name="Timer" type="Timer" parent="TopPanel/Time" unique_id=1946806119]
 autostart = true
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1040624734]
 layout_mode = 0
 offset_left = 592.0
 offset_top = 22.0
@@ -147,7 +157,7 @@ offset_right = 1330.0
 offset_bottom = 888.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_8ocm4")
 
-[node name="TabContainer" type="TabContainer" parent="Panel"]
+[node name="TabContainer" type="TabContainer" parent="Panel" unique_id=2041657015]
 layout_mode = 0
 offset_left = 9.0
 offset_top = 97.0
@@ -161,12 +171,12 @@ theme_override_styles/tab_focus = SubResource("StyleBoxEmpty_fhx61")
 tab_alignment = 1
 current_tab = 1
 
-[node name="GA_TAB_AG" type="Control" parent="Panel/TabContainer"]
+[node name="GA_TAB_AG" type="Control" parent="Panel/TabContainer" unique_id=2092478741]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Label" type="Label" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="Label" type="Label" parent="Panel/TabContainer/GA_TAB_AG" unique_id=1842212893]
 layout_mode = 0
 offset_left = 243.0
 offset_top = -129.0
@@ -178,7 +188,7 @@ text = "GA_TITLE_TIP"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LineEdit" type="LineEdit" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="LineEdit" type="LineEdit" parent="Panel/TabContainer/GA_TAB_AG" unique_id=2069392229]
 layout_mode = 0
 offset_left = 136.0
 offset_top = 36.0
@@ -193,7 +203,7 @@ placeholder_text = "GA_GAMENAME_TIP"
 alignment = 1
 caret_blink = true
 
-[node name="Executable" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="Executable" type="Button" parent="Panel/TabContainer/GA_TAB_AG" unique_id=439586552]
 layout_mode = 0
 offset_left = 38.0
 offset_top = 152.0
@@ -207,7 +217,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_EXEC_BT"
 
-[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Executable"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Executable" unique_id=1825180803]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 5.0
@@ -217,7 +227,7 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("8_qgo40")
 expand_mode = 1
 
-[node name="Front" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="Front" type="Button" parent="Panel/TabContainer/GA_TAB_AG" unique_id=1083846592]
 layout_mode = 0
 offset_left = 380.0
 offset_top = 152.0
@@ -233,7 +243,7 @@ text = "GA_FRONT_BT"
 autowrap_mode = 2
 clip_text = true
 
-[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Front"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Front" unique_id=622035063]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 5.0
@@ -243,7 +253,7 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("8_qgo40")
 expand_mode = 1
 
-[node name="Back" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="Back" type="Button" parent="Panel/TabContainer/GA_TAB_AG" unique_id=964419932]
 layout_mode = 0
 offset_left = 38.0
 offset_top = 264.0
@@ -257,7 +267,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_BACK_BT"
 
-[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Back"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Back" unique_id=90008003]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 5.0
@@ -267,7 +277,7 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("8_qgo40")
 expand_mode = 1
 
-[node name="Spine" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="Spine" type="Button" parent="Panel/TabContainer/GA_TAB_AG" unique_id=2119144042]
 layout_mode = 0
 offset_left = 380.0
 offset_top = 264.0
@@ -281,7 +291,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_SPINE_BT"
 
-[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Spine"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Spine" unique_id=1006693139]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 5.0
@@ -291,7 +301,7 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("8_qgo40")
 expand_mode = 1
 
-[node name="OptionButton" type="OptionButton" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="OptionButton" type="OptionButton" parent="Panel/TabContainer/GA_TAB_AG" unique_id=872574842]
 layout_mode = 0
 offset_left = 38.0
 offset_top = 397.0
@@ -302,7 +312,7 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/hover = SubResource("StyleBoxFlat_i4sv0")
 theme_override_styles/focus = SubResource("StyleBoxFlat_qgo40")
 
-[node name="Download" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="Download" type="Button" parent="Panel/TabContainer/GA_TAB_AG" unique_id=644269639]
 layout_mode = 0
 offset_left = 380.0
 offset_top = 380.0
@@ -316,7 +326,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_COVERS_BT"
 
-[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Download"]
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_AG/Download" unique_id=1000101550]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 21.0
@@ -326,7 +336,7 @@ scale = Vector2(0.969954, 0.969954)
 texture = ExtResource("10_52518")
 expand_mode = 1
 
-[node name="Done" type="Button" parent="Panel/TabContainer/GA_TAB_AG"]
+[node name="Done" type="Button" parent="Panel/TabContainer/GA_TAB_AG" unique_id=1077036610]
 layout_mode = 0
 offset_left = 190.0
 offset_top = 519.0
@@ -340,17 +350,149 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 text = "GA_DONE_BT"
 
-[node name="GA_TAB_OPT" type="Control" parent="Panel/TabContainer"]
+[node name="GA_TAB_OPT" type="Control" parent="Panel/TabContainer" unique_id=1577208585]
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="BottomPanel" type="Panel" parent="."]
+[node name="Label" type="Label" parent="Panel/TabContainer/GA_TAB_OPT" unique_id=539871357]
+layout_mode = 0
+offset_left = 220.0
+offset_top = -122.0
+offset_right = 509.0
+offset_bottom = -49.0
+theme_override_fonts/font = ExtResource("9_qgo40")
+theme_override_font_sizes/font_size = 32
+text = "GA_OTITLE_TIP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/TabContainer/GA_TAB_OPT" unique_id=318972262]
+layout_mode = 0
+offset_left = 71.0
+offset_top = 32.0
+offset_right = 346.0
+offset_bottom = 545.0
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/TabContainer/GA_TAB_OPT/ScrollContainer" unique_id=162190347]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CheckBox" type="CheckBox" parent="Panel/TabContainer/GA_TAB_OPT/ScrollContainer/VBoxContainer" unique_id=2086387322]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_8e8ny")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_hg730")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qumfr")
+theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_cbh8o")
+theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
+theme_override_icons/checked = SubResource("ImageTexture_kyj2f")
+theme_override_icons/unchecked = SubResource("ImageTexture_fhx61")
+button_pressed = true
+text = "PC/STEAM"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/TabContainer/GA_TAB_OPT" unique_id=1820443527]
+layout_mode = 0
+offset_left = 366.0
+offset_top = 32.0
+offset_right = 675.0
+offset_bottom = 107.0
+theme_override_colors/caret_color = Color(0.854902, 0.286275, 0.286275, 1)
+theme_override_colors/selection_color = Color(0.854902, 0.286275, 0.286275, 1)
+theme_override_fonts/font = ExtResource("7_8e8ny")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxFlat_8e8ny")
+placeholder_text = "GA_PLATNAME_TIP"
+alignment = 1
+caret_blink = true
+
+[node name="CheckButton" type="CheckButton" parent="Panel/TabContainer/GA_TAB_OPT" unique_id=1860687534]
+layout_mode = 0
+offset_left = 366.0
+offset_top = 133.0
+offset_right = 675.0
+offset_bottom = 206.0
+theme_override_fonts/font = ExtResource("7_8e8ny")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_hg730")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hg730")
+theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_cbh8o")
+theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
+text = " GA_PLATEMU_BT"
+
+[node name="PlatformExec" type="Button" parent="Panel/TabContainer/GA_TAB_OPT" unique_id=1055367944]
+layout_mode = 0
+offset_left = 366.0
+offset_top = 238.0
+offset_right = 675.0
+offset_bottom = 309.0
+size_flags_vertical = 3
+focus_mode = 1
+theme_override_fonts/font = ExtResource("7_8e8ny")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
+theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
+disabled = true
+text = "GA_PLATEXEC_BT"
+
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_OPT/PlatformExec" unique_id=1906782528]
+visible = false
+layout_mode = 0
+offset_left = 19.0
+offset_top = 5.0
+offset_right = 83.0
+offset_bottom = 69.0
+scale = Vector2(0.969954, 0.969954)
+texture = ExtResource("8_qgo40")
+expand_mode = 1
+
+[node name="CoverTemplate" type="Button" parent="Panel/TabContainer/GA_TAB_OPT" unique_id=1632255024]
+layout_mode = 0
+offset_left = 366.0
+offset_top = 350.0
+offset_right = 675.0
+offset_bottom = 421.0
+size_flags_vertical = 3
+focus_mode = 1
+theme_override_fonts/font = ExtResource("7_8e8ny")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
+theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
+text = "GA_CVTEMP_BT"
+
+[node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_OPT/CoverTemplate" unique_id=240537341]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 5.0
+offset_right = 83.0
+offset_bottom = 69.0
+scale = Vector2(0.969954, 0.969954)
+texture = ExtResource("8_qgo40")
+expand_mode = 1
+
+[node name="PlatformAdd" type="Button" parent="Panel/TabContainer/GA_TAB_OPT" unique_id=339129788]
+layout_mode = 0
+offset_left = 366.0
+offset_top = 468.0
+offset_right = 675.0
+offset_bottom = 539.0
+size_flags_vertical = 3
+focus_mode = 1
+theme_override_fonts/font = ExtResource("7_8e8ny")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
+theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
+text = "GA_DONE_BT"
+
+[node name="BottomPanel" type="Panel" parent="." unique_id=1695566680]
 layout_mode = 0
 offset_top = 891.0
 offset_right = 1920.0
 offset_bottom = 1080.0
 
-[node name="BottomPanelLabel" type="Label" parent="BottomPanel"]
+[node name="BottomPanelLabel" type="Label" parent="BottomPanel" unique_id=771124968]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -369,17 +511,22 @@ text = "Crimson Konsole"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="FileDialog" type="FileDialog" parent="."]
+[node name="FileDialog" type="FileDialog" parent="." unique_id=1117391196]
 title = "Open a File"
 ok_button_text = "Open"
 file_mode = 0
 access = 2
 use_native_dialog = true
 
+[connection signal="tab_selected" from="Panel/TabContainer" to="." method="_on_tab_container_tab_selected"]
 [connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Executable" to="." method="_on_fs_pressed"]
 [connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Front" to="." method="_on_front_pressed"]
 [connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Spine" to="." method="_on_spine_pressed"]
 [connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Download" to="." method="_on_download_pressed"]
 [connection signal="pressed" from="Panel/TabContainer/GA_TAB_AG/Done" to="." method="_on_done_pressed"]
+[connection signal="toggled" from="Panel/TabContainer/GA_TAB_OPT/CheckButton" to="." method="_on_check_button_toggled"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_OPT/PlatformExec" to="." method="_on_platform_exec_pressed"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_OPT/CoverTemplate" to="." method="_on_cover_template_pressed"]
+[connection signal="pressed" from="Panel/TabContainer/GA_TAB_OPT/PlatformAdd" to="." method="_on_platform_add_pressed"]
 [connection signal="file_selected" from="FileDialog" to="." method="_on_file_selected"]

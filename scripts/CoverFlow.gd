@@ -698,46 +698,148 @@ func launch_game():
 func _execute_game(exe_path: String) -> int:
 	var working_dir = exe_path.get_base_dir()
 	var os_name = OS.get_name()
+	var extension = exe_path.get_extension().to_lower()
 	
 	match os_name:
 		"Windows":
-			return OS.create_process("cmd", ["/c", "cd /d \"" + working_dir + "\" && \"" + exe_path + "\""])
+			match extension:
+				"exe", "bat", "cmd":
+					return OS.create_process("cmd", ["/c", "cd /d \"" + working_dir + "\" && \"" + exe_path + "\""])
+				"lnk":
+					# Ярлык Windows — запускаем через PowerShell
+					var ps_command = "(New-Object -COM WScript.Shell).CreateShortcut('" + exe_path + "').TargetPath"
+					var output = []
+					OS.execute("powershell", ["-Command", ps_command], output, true, true)
+					var target = output[0].strip_edges() if output.size() > 0 else ""
+					if target != "" and FileAccess.file_exists(target):
+						var target_dir = target.get_base_dir()
+						return OS.create_process("cmd", ["/c", "cd /d \"" + target_dir + "\" && \"" + target + "\""])
+					else:
+						# Просто открываем .lnk через ShellExecute
+						return OS.create_process("cmd", ["/c", "start", "", "\"" + exe_path + "\""])
+				"url":
+					# Интернет-ярлык Windows
+					return OS.create_process("cmd", ["/c", "start", "", "\"" + exe_path + "\""])
+				_:
+					return OS.create_process("cmd", ["/c", "cd /d \"" + working_dir + "\" && \"" + exe_path + "\""])
 		
 		"Linux":
 			OS.execute("chmod", ["+x", exe_path])
 			
-			if exe_path.get_extension().to_lower() == "exe":
-				if OS.execute("which", ["umu-run"]) == 0:
-					return OS.create_process("umu-run", [exe_path])
-				elif OS.execute("which", ["wine"]) == 0:
-					return OS.create_process("wine", [exe_path])
-				else:
-					show_notification(tr("NTF_WINENOTFOUND"))
-					return -1
-			
-			var lib_paths = []
-			var potential_lib_dirs = ["lib", "libs", "../lib", "lib64", "lib32"]
-			
-			for dir in potential_lib_dirs:
-				var full_path = working_dir + "/" + dir
-				if DirAccess.dir_exists_absolute(full_path):
-					lib_paths.append(full_path)
-			
-			lib_paths.append(working_dir)
-			
-			var ld_library_path = ":".join(lib_paths)
-			var command = "cd \"" + working_dir + "\" && LD_LIBRARY_PATH=\"" + ld_library_path + ":$LD_LIBRARY_PATH\" ./" + exe_path.get_file()
-			
-			return OS.create_process("sh", ["-c", command])
+			match extension:
+				"exe":
+					if OS.execute("which", ["umu-run"]) == 0:
+						return OS.create_process("umu-run", [exe_path])
+					elif OS.execute("which", ["wine"]) == 0:
+						return OS.create_process("wine", [exe_path])
+					else:
+						show_notification(tr("NTF_WINENOTFOUND"))
+						return -1
+				
+				"desktop":
+					return _execute_desktop_file(exe_path)
+				
+				_:
+					var lib_paths = []
+					var potential_lib_dirs = ["lib", "libs", "../lib", "lib64", "lib32"]
+					
+					for dir in potential_lib_dirs:
+						var full_path = working_dir + "/" + dir
+						if DirAccess.dir_exists_absolute(full_path):
+							lib_paths.append(full_path)
+					
+					lib_paths.append(working_dir)
+					
+					var ld_library_path = ":".join(lib_paths)
+					var command = "cd \"" + working_dir + "\" && LD_LIBRARY_PATH=\"" + ld_library_path + ":$LD_LIBRARY_PATH\" ./" + exe_path.get_file()
+					
+					return OS.create_process("sh", ["-c", command])
 		
 		"macOS":
-			if exe_path.get_extension().to_lower() == "app":
+			if extension == "app":
 				return OS.create_process("open", [exe_path])
 			else:
 				OS.execute("chmod", ["+x", exe_path])
 				return OS.create_process("sh", ["-c", "cd \"" + working_dir + "\" && ./" + exe_path.get_file()])
-		_:	
+		_:
 			return -1
+
+
+func _execute_desktop_file(desktop_path: String) -> int:
+	# Парсим .desktop файл вручную
+	var file = FileAccess.open(desktop_path, FileAccess.READ)
+	if not file:
+		show_notification(tr("NTF_NOEXECFOUND"))
+		return -1
+	
+	var exec_line = ""
+	var path_line = ""
+	var terminal_mode = false
+	var in_desktop_entry = false
+	
+	while not file.eof_reached():
+		var line = file.get_line().strip_edges()
+		
+		if line == "[Desktop Entry]":
+			in_desktop_entry = true
+			continue
+		
+		# Прекращаем чтение при входе в другую секцию
+		if line.begins_with("[") and line != "[Desktop Entry]":
+			if in_desktop_entry:
+				break
+			continue
+		
+		if not in_desktop_entry:
+			continue
+		
+		if line.begins_with("Exec="):
+			exec_line = line.substr(5).strip_edges()
+		elif line.begins_with("Path="):
+			path_line = line.substr(5).strip_edges()
+		elif line.begins_with("Terminal="):
+			terminal_mode = line.substr(9).strip_edges().to_lower() == "true"
+	
+	file.close()
+	
+	if exec_line == "":
+		show_notification(tr("NTF_NOEXECSPECIFIED"))
+		return -1
+	
+	# Убираем коды полей .desktop (%f, %F, %u, %U, %d, %i, %c, %k)
+	var field_codes = ["%f", "%F", "%u", "%U", "%d", "%D", "%n", "%N", "%i", "%c", "%k", "%v", "%m"]
+	for code in field_codes:
+		exec_line = exec_line.replace(code, "")
+	exec_line = exec_line.strip_edges()
+	
+	if exec_line == "":
+		show_notification(tr("NTF_NOEXECSPECIFIED"))
+		return -1
+	
+	# Формируем команду с учётом рабочей директории
+	var command = ""
+	if path_line != "":
+		command = "cd \"" + path_line + "\" && " + exec_line
+	else:
+		command = exec_line
+	
+	if terminal_mode:
+		# Запуск в терминале — пробуем разные эмуляторы
+		var terminals = ["xterm", "gnome-terminal", "konsole", "xfce4-terminal", "alacritty"]
+		for terminal in terminals:
+			var check = []
+			if OS.execute("which", [terminal], check, true, true) == 0:
+				match terminal:
+					"gnome-terminal":
+						return OS.create_process("gnome-terminal", ["--", "bash", "-c", command + "; exec bash"])
+					"konsole":
+						return OS.create_process("konsole", ["-e", "bash", "-c", command + "; exec bash"])
+					_:
+						return OS.create_process(terminal, ["-e", "bash -c \"" + command + "; exec bash\""])
+		# Если терминал не найден, запускаем без него
+		show_notification("Терминал не найден, запуск без него")
+	
+	return OS.create_process("sh", ["-c", command])
 
 func _start_monitoring(title: String, pid: int):
 	var game = games[current_index]
