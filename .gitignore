@@ -7,6 +7,7 @@
 export.cfg
 export_credentials.cfg
 *.import
+*.uid
 
 # Imported translations (automatically generated from CSV files)
 *.translation
@@ -16,6 +17,11 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 
+# VSCode-specific ignores 
 .vscode/
 
+# Builds-specific ignores
 Build/
+
+# Addons-specific ignores
+addons/fancy_editor_sounds/
