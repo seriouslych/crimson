@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/github/license/Crimson-Core/crimson-konsole?style=for-the-badge)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/Crimson-Core/crimson-konsole?style=for-the-badge&logo=github)](https://github.com/seriouslych/crimson/stargazers)
 
-**🎮 A stunning 3D game launcher with beautiful box art visualization 🎮**
+**Crossplatform Game Launcher with 3D box art visualization 🎮**
 
 [English](#english) | [Русский](#russian)
 
@@ -21,11 +21,11 @@
 
 <a name="english"></a>
 
-## 🌟 About
+## About
 
-**Crimson Konsole** is a modern game launcher with a beautiful 3D interface that displays your games as physical box art in a coverflow-style presentation. Built with Godot Engine 4.5, it combines aesthetic appeal with practical functionality.
+**Crimson Konsole** is a modern game launcher with a beautiful 3D interface that displays your games as physical box art in a coverflow-style presentation. Built with Godot Engine 4.6, it combines aesthetic appeal with practical functionality.
 
-### ✨ Key Features
+### Key Features
 
 - **🎨 3D Coverflow Interface** - Browse your games in stunning 3D with smooth animations
 - **🎮 Multi-Platform Support** - Works on Windows and Linux
@@ -34,7 +34,7 @@
 - **⏱️ Play Time Tracking** - Track how long you've played each game
 - **🎯 Gamepad & Keyboard Support** - Full support for Xbox, PlayStation, and generic controllers
 - **🌍 Multilingual** - English, Russian, and Japanese localization
-- **🎵 Music Player** - Built-in music player with reverb effects
+- **🎵 Music Player** - Built-in music player with vinyl style
 - **✏️ Game Management** - Easy adding, editing, and organizing of games
 
 ### Supported Box Types
@@ -56,7 +56,7 @@
 
 1. Download the latest release from [Releases](https://github.com/Crimson-Core/crimson-konsole/releases)
 2. Extract the archive
-3. Run `CrimsonKonsole.exe` (Windows) or the executable for your platform
+3. Run `CrimsonKonsole2.0.exe` (Windows) or the `CrimsonKonsole2.0.x86_64` executable 
 
 ### Building from Source
 
@@ -65,15 +65,15 @@
 git clone https://github.com/Crimson-Core/crimson-konsole.git
 cd crimson-konsole
 
-# Open in Godot 4.5+
+# Open in Godot 4.6+
 # Project -> Export -> Select your platform
 ```
 
-## 📖 Usage
+## Usage
 
 ### Adding Games
 
-1. Press `ESC` or `Start` button to open the side panel
+1. Press `ESC` or `Start/Menu/Options/+` (Generic/Xbox/DS4/NSwitch) button to open the side panel
 2. Select **"Add Game"**
 3. Enter game name and select platform type
 4. Choose the game executable
@@ -87,53 +87,33 @@ cd crimson-konsole
 - `Enter` - Launch game
 - `ESC` - Open side panel
 - `Tab` - Edit selected game
-- `Home` - Change language
 
 #### Gamepad
 - `D-Pad` - Navigate between games
-- `A Button` - Launch game
-- `Start` - Open side panel
-- `View/Select` - Edit selected game
+- `1/A/Cross/B Button` - Launch game
+- `Start/Menu/Options/+` - Open side panel
+- `Select/View/Share/-` - Edit selected game
 
 ### Managing Games
 
 1. Select a game
-2. Press `Tab` (keyboard) or `View` button (gamepad)
+2. Press `Tab` (keyboard) or `Select/View/Share/-` button (gamepad)
 3. Edit game details:
    - Change name
    - Update executable path
    - Replace cover art
    - Delete game
 
-## 🛠️ Technical Stack
+## Technical Stack
 
-- **Engine**: Godot 4.5
+- **Engine**: Godot 4.6
 - **Language**: GDScript
 - **3D Rendering**: Godot's 3D renderer with custom shaders
 - **Cover API**: SteamGridDB integration via steamboxcover
-- **Audio**: Built-in Godot audio with reverb effects
-- **Input**: Support for keyboard, mouse, and gamepad (XInput, DualShock)
+- **Audio**: Built-in Godot audio with some effects
+- **Input**: Support for keyboard, mouse, and gamepad (DInput, XInput, DualShock, Nintendo)
 
-## 📁 Project Structure
-
-```
-crimson-konsole/
-├── assets/           # Images, fonts, icons, SFX
-├── models/           # 3D game box models
-├── scenes/           # Godot scenes
-│   ├── CoverFlow.tscn
-│   ├── GameAdd.tscn
-│   └── Main.tscn
-├── scripts/          # GDScript files
-│   ├── CoverFlow.gd
-│   ├── GameLoader.gd
-│   ├── GameTimeTracker.gd
-│   └── ...
-├── shaders/          # Custom GLSL shaders
-└── translations/     # Localization files
-```
-
-## 🔧 Configuration
+## Configuration
 
 Settings are stored in:
 - **Windows**: `%APPDATA%/Godot/app_userdata/Crimson Konsole/`
@@ -146,190 +126,140 @@ Settings are stored in:
 - `game_times.json` - Play time tracking
 - `covers/` - Downloaded cover images
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit issues and pull requests.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
+## License
 
 This project is licensed under the terms specified in the [LICENSE](LICENSE) file.
 
-## 🙏 Acknowledgments
-
+## Special thanks to:
 - [Godot Engine](https://godotengine.org/) - Amazing open-source game engine
 - [SteamGridDB](https://www.steamgriddb.com/) - Cover art database
 - [Kenney](https://kenney.nl/) - Input prompt assets
+- [Godot Shaders](https://godotshaders.com/shader/balatro-background-shader) - Amazing balatro background shader
 - All testers
 - [@EpitaphNewell](https://github.com/EpitaphNewell) for initial design and concept
 
-## 📞 Support
-
-- 🐛 [Report a Bug](https://github.com/Crimson-Core/crimson-konsole/issues)
-- 💡 [Request a Feature](https://github.com/Crimson-Core/crimson-konsole/issues)
-- 💬 [Discussions](https://github.com/Crimson-Core/crimson-konsole/discussions)
-
 ---
+
+</div>
 
 <a name="russian"></a>
 
-## 🌟 О проекте
+## О проекте
 
-**Crimson Konsole** — это современный игровой лаунчер с красивым 3D интерфейсом, отображающий ваши игры в виде физических коробок в стиле coverflow. Создан на Godot Engine 4.5, сочетает эстетическую привлекательность с практичным функционалом.
+**Crimson Konsole** — это современный игровой лаунчер с красивым 3D-интерфейсом, в котором игры отображаются как настоящие физические коробки в стиле coverflow. Сделан на Godot Engine 4.6, сочетает в себе приятный внешний вид и нормальный функционал.
 
-### ✨ Основные возможности
+### Основные фичи
 
-- **🎨 3D Coverflow интерфейс** - Просматривайте игры в потрясающем 3D с плавными анимациями
-- **🎮 Мультиплатформенность** - Работает на Windows и Linux
-- **📦 Разные типы коробок** - Поддержка форматов Xbox, PlayStation, PC, Nintendo
-- **🖼️ Автозагрузка обложек** - Интеграция с SteamGridDB для автоматической загрузки обложек
-- **⏱️ Отслеживание времени** - Узнайте, сколько времени вы провели в каждой игре
-- **🎯 Геймпад и клавиатура** - Полная поддержка контроллеров Xbox, PlayStation и других
-- **🌍 Мультиязычность** - Локализация на английский, русский и японский языки
-- **🎵 Музыкальный плеер** - Встроенный музыкальный плеер с эффектами реверберации
-- **✏️ Управление играми** - Простое добавление, редактирование и организация игр
+- **🎨 3D Coverflow** — листаешь игры в 3D с плавными анимациями, выглядит круто
+- **🎮 Мультиплатформенность** — работает на Windows и Linux
+- **📦 Разные типы коробок** — поддержка форматов Xbox, PlayStation, PC, Nintendo
+- **🖼️ Автозагрузка обложек** — интеграция со SteamGridDB, обложки скачиваются сами
+- **⏱️ Учёт времени** — видно сколько ты уже потратил времени на каждую игру
+- **🎯 Геймпад и клавиатура** — полная поддержка Xbox, PlayStation и обычных контроллеров
+- **🌍 Несколько языков** — есть английский, русский и японский
+- **🎵 Музыкальный плеер** — встроенный плеер в стиле виниловых пластинок
+- **✏️ Управление играми** — легко добавлять, редактировать и упорядочивать игры
 
 ### Поддерживаемые типы коробок
 
 - 🟦 PC/Steam
 - 🟩 Xbox (Original, 360, One)
-- 🔵 PlayStation (1-5)
+- 🔵 PlayStation (1–5)
 - 🔴 Nintendo (N64, GameCube, Wii, Switch)
 
 ## 🚀 Установка
 
-### Системные требования
+### Что нужно
 
-- ОС: Windows 10+, Linux
-- Дисплей: Рекомендуется 1920x1080
-- Место на диске: ~100МБ для приложения + место для обложек игр
+- ОС: Windows 10+ или Linux
+- Дисплей: рекомендуется 1920x1080
+- Место на диске: ~100 МБ для самого приложения + место под обложки
 
-### Загрузка
+### Скачать
 
-1. Скачайте последнюю версию из [Releases](https://github.com/Crimson-Core/crimson-konsole/releases)
-2. Распакуйте архив
-3. Запустите `CrimsonKonsole.exe` (Windows) или исполняемый файл для вашей платформы
+1. Скачай последний релиз со страницы [Releases](https://github.com/Crimson-Core/crimson-konsole/releases)
+2. Распакуй архив
+3. Запусти `CrimsonKonsole2.0.exe` (Windows) или `CrimsonKonsole2.0.x86_64` (Linux)
 
-### Сборка из исходников
+### Собрать из исходников
 
 ```bash
-# Клонируйте репозиторий
+# Клонируй репозиторий
 git clone https://github.com/Crimson-Core/crimson-konsole.git
 cd crimson-konsole
 
-# Откройте в Godot 4.5+
-# Проект -> Экспорт -> Выберите вашу платформу
+# Открой в Godot 4.6+
+# Project -> Export -> выбери свою платформу
 ```
 
-## 📖 Использование
+## Использование
 
-### Добавление игр
+### Добавить игру
 
-1. Нажмите `ESC` или кнопку `Start` для открытия боковой панели
-2. Выберите **"Добавить игру"**
-3. Введите название игры и выберите тип платформы
-4. Укажите исполняемый файл игры
-5. (Опционально) Загрузите обложки автоматически или выберите свои изображения
-6. Нажмите **"Готово"** для сохранения
+1. Нажми `ESC` или кнопку `Start/Menu/Options/+` (Generic/Xbox/DS4/NSwitch), чтобы открыть боковую панель
+2. Выбери **«Добавить игру»**
+3. Введи название и выбери платформу
+4. Укажи путь до исполняемого файла
+5. (Необязательно) скачай обложку автоматически или выбери свою
+6. Нажми **«Готово»**
 
 ### Навигация
 
 #### Клавиатура
-- `↑/↓` - Навигация между играми
-- `Enter` - Запустить игру
-- `ESC` - Открыть боковую панель
-- `Tab` - Редактировать выбранную игру
-- `Home` - Сменить язык
+- `↑/↓` — переключаться между играми
+- `Enter` — запустить игру
+- `ESC` — открыть боковую панель
+- `Tab` — редактировать выбранную игру
 
 #### Геймпад
-- `D-Pad` - Навигация между играми
-- `Кнопка A` - Запустить игру
-- `Start` - Открыть боковую панель
-- `View/Select` - Редактировать выбранную игру
+- `D-Pad` — переключаться между играми
+- `1/A/Cross/B` — запустить игру
+- `Start/Menu/Options/+` — открыть боковую панель
+- `Select/View/Share/-` — редактировать выбранную игру
 
-### Управление играми
+### Редактирование игры
 
-1. Выберите игру
-2. Нажмите `Tab` (клавиатура) или кнопку `View` (геймпад)
-3. Редактируйте данные игры:
-   - Изменить название
-   - Обновить путь к исполняемому файлу
-   - Заменить обложки
+1. Выбери игру
+2. Нажми `Tab` (клавиатура) или `Select/View/Share/-` (геймпад)
+3. Можно изменить:
+   - Название
+   - Путь до исполняемого файла
+   - Обложку
    - Удалить игру
 
-## 🛠️ Технический стек
+## Технологии
 
-- **Движок**: Godot 4.5
+- **Движок**: Godot 4.6
 - **Язык**: GDScript
-- **3D рендеринг**: 3D движок Godot с пользовательскими шейдерами
-- **API обложек**: Интеграция с SteamGridDB через steamboxcover
-- **Аудио**: Встроенная аудиосистема Godot с эффектами реверберации
-- **Ввод**: Поддержка клавиатуры, мыши и геймпада (XInput, DualShock)
+- **3D**: рендерер Godot с кастомными шейдерами
+- **API обложек**: интеграция со SteamGridDB через steamboxcover
+- **Звук**: встроенный аудио Godot с эффектами
+- **Ввод**: клавиатура, мышь, геймпад (DInput, XInput, DualShock, Nintendo)
 
-## 📁 Структура проекта
+## Конфигурация
 
-```
-crimson-konsole/
-├── assets/           # Изображения, шрифты, иконки, звуки
-├── models/           # 3D модели коробок игр
-├── scenes/           # Сцены Godot
-│   ├── CoverFlow.tscn
-│   ├── GameAdd.tscn
-│   └── Main.tscn
-├── scripts/          # Файлы GDScript
-│   ├── CoverFlow.gd
-│   ├── GameLoader.gd
-│   ├── GameTimeTracker.gd
-│   └── ...
-├── shaders/          # Пользовательские GLSL шейдеры
-└── translations/     # Файлы локализации
-```
-
-## 🔧 Конфигурация
-
-Настройки хранятся в:
+Настройки хранятся здесь:
 - **Windows**: `%APPDATA%/Godot/app_userdata/Crimson Konsole/`
 - **Linux**: `~/.local/share/godot/app_userdata/Crimson Konsole/`
 
 ### Файлы конфигурации
 
-- `settings.cfg` - Настройки приложения
-- `games/*.json` - Данные отдельных игр
-- `game_times.json` - Отслеживание времени игры
-- `covers/` - Загруженные изображения обложек
+- `settings.cfg` — настройки приложения
+- `games/*.json` — данные по каждой игре
+- `game_times.json` — учёт времени
+- `covers/` — скачанные обложки
 
-## 🤝 Вклад в проект
+## Лицензия
 
-Вклад приветствуется! Не стесняйтесь отправлять issues и pull request'ы.
+Проект распространяется на условиях, указанных в файле [LICENSE](LICENSE).
 
-1. Сделайте форк репозитория
-2. Создайте ветку для функции (`git checkout -b feature/AmazingFeature`)
-3. Зафиксируйте изменения (`git commit -m 'Добавить AmazingFeature'`)
-4. Отправьте в ветку (`git push origin feature/AmazingFeature`)
-5. Откройте Pull Request
-
-## 📝 Лицензия
-
-Этот проект лицензирован на условиях, указанных в файле [LICENSE](LICENSE).
-
-## 🙏 Благодарности
-
-- [Godot Engine](https://godotengine.org/) - Потрясающий движок с открытым исходным кодом
-- [SteamGridDB](https://www.steamgriddb.com/) - База данных обложек
-- [Kenney](https://kenney.nl/) - Спрайты подсказок ввода
+## Отдельное спасибо:
+- [Godot Engine](https://godotengine.org/) — офигенный движок с открытым исходным кодом
+- [SteamGridDB](https://www.steamgriddb.com/) — база данных обложек
+- [Kenney](https://kenney.nl/) — иконки для управления
+- [Godot Shaders](https://godotshaders.com/shader/balatro-background-shader) — крутой шейдер фона в стиле Balatro
 - Всем тестировщикам
-- [@EpitaphNewell](https://github.com/EpitaphNewell) за изначальный дизайн и концепт
-
-## 📞 Поддержка
-
-- 🐛 [Сообщить об ошибке](https://github.com/Crimson-Core/crimson-konsole/issues)
-- 💡 [Предложить функцию](https://github.com/Crimson-Core/crimson-konsole/issues)
-- 💬 [Обсуждения](https://github.com/Crimson-Core/crimson-konsole/discussions)
+- [@EpitaphNewell](https://github.com/EpitaphNewell) — за изначальный дизайн и концепцию
 
 ---
 

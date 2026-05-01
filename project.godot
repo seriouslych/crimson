@@ -15,7 +15,7 @@ config/name_localized={
 "ja": "クリムゾンコンソール"
 }
 config/description="Game Launcher with Game Boxes"
-config/version="2.1"
+config/version="2.6"
 run/main_scene="uid://1v70uh5v1r74"
 config/features=PackedStringArray("4.5", "Forward Plus")
 boot_splash/bg_color=Color(0.129412, 0.129412, 0.129412, 1)

@@ -114,7 +114,7 @@ color = Color(0.156863, 0.156863, 0.156863, 1)
 z_index = 100
 offset_top = 258.0
 offset_right = 358.0
-offset_bottom = 578.90906
+offset_bottom = 654.0
 
 [node name="Home" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
@@ -136,6 +136,32 @@ texture = ExtResource("2_waqlc")
 expand_mode = 1
 
 [node name="Hover" type="ColorRect" parent="CanvasLayer/VBoxContainer/Home"]
+visible = false
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 75.0
+color = Color(0.854902, 0.286275, 0.286275, 1)
+
+[node name="MusicPlayer" type="Button" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("1_o4m3c")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/hover = SubResource("StyleBoxFlat_o4m3c")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ad6hi")
+text = "SP_MPLAYER_BT"
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/VBoxContainer/MusicPlayer"]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 7.72726
+offset_right = 83.0
+offset_bottom = 71.7273
+scale = Vector2(0.969954, 0.969954)
+texture = ExtResource("4_ad6hi")
+expand_mode = 1
+
+[node name="Hover" type="ColorRect" parent="CanvasLayer/VBoxContainer/MusicPlayer"]
 visible = false
 layout_mode = 0
 offset_right = 4.0

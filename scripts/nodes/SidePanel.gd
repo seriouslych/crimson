@@ -16,6 +16,7 @@ var side_panel_instance = side_panel_scene.instantiate()
 @onready var side_panel_container = side_panel_instance.get_node("CanvasLayer/VBoxContainer")
 @onready var side_panel_button_hover = side_panel_instance.get_node("CanvasLayer/VBoxContainer/Home/Hover")
 @onready var home_button = side_panel_instance.get_node("CanvasLayer/VBoxContainer/Home")
+@onready var mplayer_button = side_panel_instance.get_node("CanvasLayer/VBoxContainer/MusicPlayer")
 @onready var gameadd_button = side_panel_instance.get_node("CanvasLayer/VBoxContainer/GameAdd")
 @onready var settings_button = side_panel_instance.get_node("CanvasLayer/VBoxContainer/Settings")
 @onready var exit_button = side_panel_instance.get_node("CanvasLayer/VBoxContainer/Exit")
@@ -23,11 +24,13 @@ var side_panel_instance = side_panel_scene.instantiate()
 func _ready():
 	side_panel_init()
 	home_button.pressed.connect(func(): side_panel_change_scene(home_button))
+	mplayer_button.pressed.connect(func(): side_panel_change_scene(mplayer_button))
 	gameadd_button.pressed.connect(func(): side_panel_change_scene(gameadd_button))
 	settings_button.pressed.connect(func(): side_panel_change_scene(settings_button))
 	exit_button.pressed.connect(func(): side_panel_change_scene(exit_button))
 	
 	home_button.visible = false
+	mplayer_button.visible = false
 	gameadd_button.visible = false
 	settings_button.visible = false
 	exit_button.visible = false
@@ -63,8 +66,8 @@ func show_panel():
 	
 	MusicPlayer.transition_to_muffled(0.3, 450.0)
 	
-	var main_scene = get_tree().get_first_node_in_group("main_scene")
-	var current_scene = main_scene.get_current_scene()
+	#var main_scene = get_tree().get_first_node_in_group("main_scene")
+	#var current_scene = main_scene.get_current_scene()
 	
 	dark_node.visible = true
 	dark_node.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -78,17 +81,18 @@ func show_panel():
 		side_panel_shown = true
 		
 		home_button.visible = true
+		mplayer_button.visible = true
 		gameadd_button.visible = true
 		settings_button.visible = true
 		exit_button.visible = true
 		
-		# Определяем индекс текущей сцены
-		if current_scene.name == "CoverFlow":
-			side_panel_current_index = 0
-		elif current_scene.name == "GameAdd":
-			side_panel_current_index = 1
-		elif current_scene.name == "Settings":
-			side_panel_current_index = 2
+		## Определяем индекс текущей сцены
+		#if current_scene.name == "CoverFlow":
+			#side_panel_current_index = 0
+		#elif current_scene.name == "GameAdd":
+			#side_panel_current_index = 1
+		#elif current_scene.name == "Settings":
+			#side_panel_current_index = 2
 		
 		# Устанавливаем фокус на текущую кнопку
 		_set_button_focus(side_panel_current_index)
@@ -107,6 +111,7 @@ func hide_panel():
 		side_panel_animation.play("hide_panel")
 		side_panel_moving = true
 		home_button.visible = false
+		mplayer_button.visible = false
 		gameadd_button.visible = false
 		settings_button.visible = false
 		exit_button.visible = false
@@ -131,6 +136,7 @@ func side_panel_init():
 	
 	# Собираем кнопки в правильном порядке
 	var home_btn = vbox_container.get_node_or_null("Home")
+	var mplayer_btn = vbox_container.get_node_or_null("MusicPlayer")
 	var gameadd_btn = vbox_container.get_node_or_null("GameAdd") 
 	var settings_btn = vbox_container.get_node_or_null("Settings")
 	var exit_btn = vbox_container.get_node_or_null("Exit")
@@ -139,6 +145,11 @@ func side_panel_init():
 		side_panel_buttons.append(home_btn)
 		home_btn.focus_mode = Control.FOCUS_NONE
 		_setup_button_signals(home_btn)
+		
+	if mplayer_btn and mplayer_btn is Button:
+		side_panel_buttons.append(mplayer_btn)
+		mplayer_btn.focus_mode = Control.FOCUS_NONE
+		_setup_button_signals(mplayer_btn)
 		
 	if gameadd_btn and gameadd_btn is Button:
 		side_panel_buttons.append(gameadd_btn)
@@ -237,6 +248,12 @@ func side_panel_change_scene(button: Button = null):
 			if current_scene.name != "CoverFlow":
 				await hide_panel()
 				main_scene.load_scene("res://scenes/CoverFlow.tscn")
+			else:
+				hide_panel()
+		"MusicPlayer":
+			if current_scene.name != "VinylGrid":
+				await hide_panel()
+				main_scene.load_scene("res://scenes/VinylGrid.tscn")
 			else:
 				hide_panel()
 		"GameAdd":

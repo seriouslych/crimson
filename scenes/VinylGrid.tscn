@@ -1,0 +1,164 @@
+[gd_scene load_steps=8 format=3 uid="uid://gm8nq4tgqad0"]
+
+[ext_resource type="Script" uid="uid://plo3lsj7h0qs" path="res://scripts/VinylGrid.gd" id="1"]
+[ext_resource type="FontFile" uid="uid://dj3q2lpnkcabm" path="res://assets/fonts/Montserrat-Medium.ttf" id="2"]
+[ext_resource type="FontFile" uid="uid://bl33m6ku6ffwm" path="res://assets/fonts/Jost/Jost-VariableFont_wght.ttf" id="3"]
+[ext_resource type="Texture2D" uid="uid://ba4yqe08xdwar" path="res://assets/ui/particles.png" id="4"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.2, 0.2, 0.2, 1)
+background_energy_multiplier = 0.5
+ambient_light_source = 2
+ambient_light_color = Color(0.7, 0.7, 0.7, 1)
+ambient_light_energy = 1.5
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font = ExtResource("2")
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_artist"]
+font = ExtResource("3")
+font_size = 32
+font_color = Color(0.7, 0.7, 0.7, 1)
+
+[node name="VinylGrid" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="ViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 35.0
+offset_bottom = -150.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="ViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 895)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="ViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.830957, 15)
+fov = 40.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="ViewportContainer/SubViewport"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 5, 5, 5)
+light_energy = 0.8
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportContainer/SubViewport"]
+environment = SubResource("Environment_1")
+
+[node name="GridContainer" type="Node3D" parent="ViewportContainer/SubViewport"]
+
+[node name="BottomPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -150.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="AlbumTitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -120.0
+offset_right = 400.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Album Title"
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArtistLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -70.0
+offset_right = 400.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Artist Name"
+label_settings = SubResource("LabelSettings_artist")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Loading" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -50.0
+offset_right = 200.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 64
+text = "VG_LOADING_TIP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Particles" type="TextureRect" parent="."]
+z_index = -1
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("4")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Instructions" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -180.0
+offset_right = 500.0
+offset_bottom = -20.0
+grow_vertical = 0
+
+[node name="NavLabel" type="Label" parent="Instructions"]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 24
+text = "VG_NAVI_TIP"
+
+[node name="SelectLabel" type="Label" parent="Instructions"]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 400.0
+offset_bottom = 90.0
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 24
+text = "VG_SELECT_TIP"

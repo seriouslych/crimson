@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cstdxky6y0co4"
+path="res://.godot/imported/Piano_Ui (7).wav-ee765a2021aaedf9a4c3255939ba99fb.sample"
+
+[deps]
+
+source_file="res://assets/sfx/Fantasy UI SFX/Piano/Piano_Ui (7).wav"
+dest_files=["res://.godot/imported/Piano_Ui (7).wav-ee765a2021aaedf9a4c3255939ba99fb.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

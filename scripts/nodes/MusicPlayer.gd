@@ -82,29 +82,88 @@ func create_metadata_safe(audio_stream: AudioStream, file_path: String) -> Music
 	
 	return metadata
 
-func load_music():
-	var tracks: Array[String] = [
-		"res://assets/music/ASC - binary.mp3",
-		"res://assets/music/ASC - without u.mp3",
-		"res://assets/music/Deathbrain - how to sleep.mp3",
-		"res://assets/music/Deathbrain - i don't mind staying up late.mp3",
-		"res://assets/music/Deathbrain - my room is upside down.mp3",
-		"res://assets/music/Star Trash - Smokescreen.mp3",
-		"res://assets/music/Xxtarlit⚸ - Fleeting Frozen Heart.mp3",
-		"res://assets/music/Xxtarlit⚸ - untitled.mp3"
-	]
+func get_music_folder_path() -> String:
+	"""Возвращает путь к папке music с улучшенной отладкой"""
+	var exe_path = OS.get_executable_path()
+	var exe_dir = exe_path.get_base_dir()
+	
+	var music_path: String
+	if OS.get_name() == "Windows":
+		music_path = exe_dir + "/music"
+	else:
+		music_path = exe_dir + "/music"
+	
+	# Проверяем также в текущей рабочей директории
+	var current_dir = OS.get_environment("PWD")
+	if current_dir == "":
+		current_dir = exe_dir
+	
+	var alt_path = current_dir + "/music"
+	
+	# Если основной путь не существует, пробуем альтернативный
+	if not DirAccess.dir_exists_absolute(music_path) and DirAccess.dir_exists_absolute(alt_path):
+		return alt_path
+	
+	return music_path
 
+func load_audio_stream(file_path: String) -> AudioStream:
+	"""Загружает аудиофайл из внешнего пути"""
+	var extension := file_path.get_extension().to_lower()
+	var file := FileAccess.open(file_path, FileAccess.READ)
+	
+	if file == null:
+		return null
+	
+	var audio_stream: AudioStream
+	
+	if extension == "mp3":
+		audio_stream = AudioStreamMP3.new()
+		audio_stream.data = file.get_buffer(file.get_length())
+	elif extension == "ogg":
+		audio_stream = AudioStreamOggVorbis.load_from_file(file_path)
+	elif extension == "wav":
+		audio_stream = AudioStreamWAV.new()
+		# WAV требует более сложной обработки, но базово:
+		audio_stream.data = file.get_buffer(file.get_length())
+	
+	file.close()
+	return audio_stream
+
+func load_music():
+	var music_folder := get_music_folder_path()
+	var dir := DirAccess.open(music_folder)
+	
+	if dir == null:
+		push_error("Не удалось открыть папку: " + music_folder)
+		return
+	
 	background_tracks.clear()
 	tracks_metadata.clear()
-
-	for path in tracks:
-		var audio_stream := load(path) as AudioStream
-		if audio_stream:
-			background_tracks.append(path)
-			var metadata := create_metadata_safe(audio_stream, path)
-			tracks_metadata.append(metadata)
-		else:
-			push_warning("Не удалось загрузить трек: " + path)
+	
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+	
+	while file_name != "":
+		if not dir.current_is_dir():
+			# Проверяем, что это аудиофайл
+			var extension := file_name.get_extension().to_lower()
+			if extension in ["mp3", "ogg", "wav"]:
+				var path := music_folder + "/" + file_name
+				var audio_stream := load_audio_stream(path)
+				
+				if audio_stream:
+					background_tracks.append(path)
+					var metadata := create_metadata_safe(audio_stream, path)
+					tracks_metadata.append(metadata)
+				else:
+					push_warning("Не удалось загрузить трек: " + path)
+		
+		file_name = dir.get_next()
+	
+	dir.list_dir_end()
+	
+	if background_tracks.is_empty():
+		push_warning("Не найдено аудиофайлов в папке: " + music_folder)
 
 # Загрузка настроек из SettingsManager
 func load_settings_from_config():

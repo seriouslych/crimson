@@ -1,0 +1,60 @@
+key,en,ru,ja
+CF_PANEL_TIP,Panel,Панель,パネル 
+CF_NAVI_TIP,Navigation,Навигация,ナビゲーション 
+CF_START_TIP,Start,Запуск,スタート 
+CF_KBCONNECTED_TIP,Keyboard connected,Подключена клавиатура,キーボード接続済み
+CF_GPCONNECTED_TIP,Gamepad connected,Подключен контроллер,ゲームパッド接続済み
+CF_NOGAMES_TIP,No games,Нет игр,ゲームなし
+CF_LOADING_SPLASH,Loading…,Загрузка…,読み込み中…
+CF_GT_TIME_TIP,YOU’VE PLAYED: ,ВЫ ИГРАЛИ: ,プレイした時間: 
+CF_GT_NOTIME_TIP,YOU’VE PLAYED: 0 min.,ВЫ ИГРАЛИ: 0 мин.,プレイした時間: 0分
+CF_GT_DATE_TIP,LAST TIME PLAYED: ,ПОСЛЕДНИЙ ЗАПУСК: ,最後にプレイした時間: 
+CF_GT_NODATE_TIP,LAST TIME PLAYED: never,ПОСЛЕДНИЙ ЗАПУСК: никогда,最後にプレイした時間: なし
+CF_GAMESTATE_TIP,Started,Запущено,開始済み
+CF_GT_HTIME_FORMAT,{hours} hours,{hours} ч.,{hours}時間 
+CF_GT_MTIME_FORMAT,{minutes} min.,{minutes} мин.,{minutes}分
+CF_GT_NOTIME_FORMAT,never,никогда,なし
+SP_HOME_BT,Home,Главная,ホーム
+SP_ADDGAME_BT,Add Game,Добав. игру,ゲームを追加
+SP_SETTINGS_BT,Settings,Настройки,設定
+SP_EXIT_BT,Exit,Выход,終了
+GA_TITLE_TIP,Add Game,Добавить игру,ゲームを追加
+GA_GAMENAME_TIP,Game name…,Название игры…,ゲーム名…
+GA_EXEC_BT,Executable,Исп. Файл,実行ファイル
+GA_FRONT_BT,Front,Передний,表紙
+GA_BACK_BT,Back,Задний,裏表紙
+GA_SPINE_BT,Spine,Боковой,背表紙
+GA_COVERS_BT,Download\nCovers,Скачать\nОбложки,カバーを\n\nダウンロード
+GA_DOWNCOVERS_BT,Downloading\nCovers…,Скачивание\nОбложек…,カバーを\n\nダウンロード中…
+GA_DONE_BT,Done,Готово,完了
+NTF_ALREADYSTARTED,«{title}» is already started.,«{title}» уже запущена.,«{title}» はすでに開始されています。
+NTF_NOEXECSPECIFIED,The game has no executable file specified!,У игры не указан исполняемый файл!,このゲームには実行ファイルが指定されていません！
+NTF_NOEXECFOUND,Executable file not found!,Исполняемый файл не найден!,実行ファイルが見つかりません！
+NTF_GAMESTARTED,«{title}» started.,«{title}» запущен.,«{title}» 開始済み。
+NTF_STARTFAILED,Failed to launch the game!,Не удалось запустить игру!,ゲームの起動に失敗しました！
+NTF_WINENOTFOUND,For .exe you need wine or umu-launcher! ,Для .exe нужен wine или umu-launcher!,.exe は wine または umu-launcher が必要です！
+NTF_STOPSUCCESS,«{title}» has finished running successfully.,«{title}» завершился удачно.,«{title}» が正常に終了しました。
+NTF_TYPEGAMENAME,Enter the name of the game! ,Введите название игры!,ゲーム名を入力してください！
+NTF_SBCNOTFOUND,steamboxcover executable was not found! ,Программа steamboxcover не найдена!,steamboxcover 実行ファイルが見つかりません！
+NTF_COVERDOWNFAILED,Downloading covers failed! ,Скачивание обложек провалилось!,カバーのダウンロードに失敗しました！
+NTF_COVERDOWNSUCCESS,Covers downloaded successfully! ,Обложки загружены успешно!,カバーのダウンロードに成功しました！
+NTF_GAMESAVESUCCESS,Game saved successfully! ,Игра сохранена успешно!,ゲームが正常に保存されました！
+NTF_GAMESAVEFAILED,Error saving the game! ,Ошибка при сохранении игры!,ゲームの保存中にエラーが発生しました！
+NTF_FILENOTFOUND,File not found!,Файл не найден!,ファイルが見つかりません！
+NTF_NOWPLAYING,NOW PLAYING:\n,СЕЙЧАС ИГРАЕТ:\n,現在再生中:\n
+NTF_GAMEUPDATESUCCESS,The game was updated successfully!,Игра обновлена успешно!,ゲームは正常に更新されました！
+NTF_GAMEDELETESUCCESS,The game was deleted successfully! ,Игра удалена успешно!,ゲームは正常に削除されました！
+ST_TITLE,Settings,Настройки,設定
+ST_MUSICCHECK,Music,Музыка,音楽
+ST_MUSICVOL,Music Volume,Громкость музыки,音楽の音量
+ST_LANGUAGE,Language ,Язык,言語
+CF_GE_STOP,Save changes,Сохранить изменения,変更を保存
+CF_GE_EDIT,Edit game,Изменить игру,ゲームを編集
+CF_GE_DELETE,Delete game ,Удалить игру,ゲームを削除
+WEEKDAY_0,SUN,ВС,日
+WEEKDAY_1,MON,ПН,月
+WEEKDAY_2,TUE,ВТ,火
+WEEKDAY_3,WED,СР,水
+WEEKDAY_4,THU,ЧТ,木
+WEEKDAY_5,FRI,ПТ,金
+WEEKDAY_6,SAT,СБ,土
