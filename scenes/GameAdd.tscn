@@ -420,7 +420,8 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_hg730")
 theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
-text = " GA_PLATEMU_BT"
+text = "GA_PLATEMU_BT"
+alignment = 1
 
 [node name="PlatformExec" type="Button" parent="Panel/TabContainer/GA_TAB_OPT" unique_id=1055367944]
 layout_mode = 0
@@ -435,7 +436,7 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/hover = SubResource("StyleBoxFlat_cbh8o")
 theme_override_styles/focus = SubResource("StyleBoxFlat_52518")
 disabled = true
-text = "GA_PLATEXEC_BT"
+text = "GA_EXEC_BT"
 
 [node name="TextureRect" type="TextureRect" parent="Panel/TabContainer/GA_TAB_OPT/PlatformExec" unique_id=1906782528]
 visible = false

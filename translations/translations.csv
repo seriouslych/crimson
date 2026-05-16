@@ -21,15 +21,19 @@ SP_SETTINGS_BT,Settings,Настройки,設定
 SP_EXIT_BT,Exit,Выход,終了
 GA_TITLE_TIP,Add Game,Добавить игру,ゲームを追加
 GA_GAMENAME_TIP,Game name…,Название игры…,ゲーム名…
-GA_EXEC_BT,Executable,Исп. Файл,実行ファイル
+GA_EXEC_BT,Executable,Исп. Файл,     実行ファイル
 GA_FRONT_BT,Front,Передний,表紙
 GA_BACK_BT,Back,Задний,裏表紙
 GA_SPINE_BT,Spine,Боковой,背表紙
-GA_COVERS_BT,Download\nCovers,Скачать\nОбложки,カバーを\n\nダウンロード
-GA_DOWNCOVERS_BT,Downloading\nCovers…,Скачивание\nОбложек…,カバーを\n\nダウンロード中…
+GA_COVERS_BT,Download\nCovers,Скачать\nОбложки,カバーを\nダウンロード
+GA_DOWNCOVERS_BT,Downloading\nCovers…,Скачивание\nОбложек…,カバーを\nダウンロード中…
 GA_DONE_BT,Done,Готово,完了
 GA_TAB_AG,Add Game,Добав. игру,ゲームを追加
 GA_TAB_OPT,Options,Опции,オプション
+GA_OTITLE_TIP,Add Platform,Добав. Платформу,プラットフォームを追加
+GA_PLATNAME_TIP,Platform name…,Назв. Платформы…,プラットフォーム名…
+GA_PLATEMU_BT,Emulator,Эмулятор,エミュレーター
+GA_CVTEMP_BT,Template,Шаблон,     テンプレート
 NTF_ALREADYSTARTED,«{title}» is already started.,«{title}» уже запущена.,«{title}» はすでに開始されています。
 NTF_NOEXECSPECIFIED,The game has no executable file specified!,У игры не указан исполняемый файл!,このゲームには実行ファイルが指定されていません！
 NTF_NOEXECFOUND,Executable file not found!,Исполняемый файл не найден!,実行ファイルが見つかりません！
